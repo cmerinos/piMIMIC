@@ -28,4 +28,4 @@ Suggests:
     knitr,
     rmarkdown
 Date/Publication: 2025-02-22
-Config/roxygen2/version: 8.0.0
+Config/roxygen2/version: 8.1.0

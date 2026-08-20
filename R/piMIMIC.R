@@ -22,30 +22,30 @@
 #' \item{fit}{The fitted lavaan object.}
 #'
 #' @details
-#' This function implements Differential Item Functioning (DIF) analysis using
-#' the Product of Indicators approach (PI; Kolbe & Jorgensen, 2018) within the
-#' Restricted Factor Analysis (RFA; Oort, 1998) framework. This method operates under a
-#' MIMIC scheme (Finch, 2005), incorporating latent variable interactions using PI (Kolbe et al., 2018, 2019;
+#' This function implements Differential Item Functioning (DIF) analysis using the Product of Indicators approach
+#' (PI; Kolbe & Jorgensen, 2018) within the Restricted Factor Analysis (RFA; Oort, 1998) framework. This method operates
+#' under a MIMIC scheme (Finch, 2005), incorporating latent variable interactions using PI (Kolbe et al., 2018, 2019;
 #' Kolbe, Jorgensen, & Molenaar, 2020). It allows for the evaluation of uniform (uDIF) and non-uniform DIF (nuDIF)
 #' with covariates that can be categorical (e.g., sex) or continuous (e.g., self-esteem, conscientiousness).
 #'
-#' Estimation is performed via `lavaan::cfa`, and DIF statistical tests are based
-#' on the Score test (LRT). By default, chi-square tests compare an unrestricted model
-#' (with covariate effect and interaction parameters freely estimated) and a restricted model
-#' (with these parameters fixed to zero), using the standard chi-square distribution.
+#' Estimation is performed via lavaan::cfa, and DIF statistical tests are based
+#' on the Score test (Lagrange Multiplier test used to evaluate fixed or constrained parameters). By default,
+#' chi-square tests compare an unrestricted model (with covariate effect and interaction parameters freely estimated)
+#' and a restricted model (with these parameters fixed to zero), using the standard chi-square
+#' distribution.
 #'
 #' Simulation studies (Oort, 1992, 1998; Kim, Yoon & Lee, 2011) have shown that
 #' the LR test under MIMIC may suffer from inflated Type I error rates. To address this, Oort proposed
 #' a correction of the chi-square critical value:
 #'
-#' \deqn{K' = (χ²₀ / (K + df₀ - 1)) * K}
-#' where χ²₀ and df₀ are from the baseline (full invariance) model, and K is
+#' \deqn{K^\prime = (\chi^2_0 / (K + df_0 - 1)) * K}
+#' where \eqn{\chi^2_0} and \eqn{df_0} are from the baseline (full invariance) model, and \eqn{K} is
 #' the original critical value. This adjustment is recommended when the baseline
-#' model shows evidence of misfit (χ²₀/df₀ > 1), as it helps control Type I error.
+#' model shows evidence of misfit (\eqn{\chi^2_0 / df_0 > 1}), as it helps control Type I error.
 #'
 #' where:
 #' \itemize{
-#'   \item \eqn{K'} is the adjusted critical value,
+#'   \item \eqn{K^\prime} is the adjusted critical value,
 #'   \item \eqn{K} is the original critical value from the chi-square distribution at significance level \eqn{p.crit},
 #'   \item \eqn{\chi^2_0} is the chi-square statistic of the baseline model,
 #'   \item \eqn{df_0} is the corresponding degrees of freedom of the baseline model.
@@ -121,18 +121,15 @@
 #' *Structural Equation Modeling*, 1–15.
 #'
 #' @importFrom lavaan cfa lavTestScore parameterestimates
-#' @importFrom scripty prods mimicparam
-#'
+#' @importFrom semTools indProd
 #' @export
 piMIMIC <- function(data, items, cov, lvname = "LatFact", est = "MLM",
                     Oort.adj = FALSE, p.crit = 0.05) {
 
+  # ---- Basic checks ----
   if (!is.character(est) || nchar(est) == 0) {
     stop("Error: Estimator must be a non-empty string (see lavaan documentation).")
   }
-
-  cov_lat <- paste0(cov, "lat")
-
   if (!all(c(items, cov) %in% colnames(data))) {
     stop("Error: Some item names or the covariate are not present in the data frame.")
   }
@@ -140,43 +137,93 @@ piMIMIC <- function(data, items, cov, lvname = "LatFact", est = "MLM",
     stop("Error: The latent variable name ('lvname') must be a non-empty string.")
   }
 
+  # ---- Prepare covariate: convert to numeric and center ----
+  # If factor, convert to 0/1 (first level = 0, second = 1)
   if (is.factor(data[[cov]])) {
-    data[[cov]] <- as.numeric(data[[cov]])
-  } else if (!is.numeric(data[[cov]])) {
-    stop(paste("Error: The covariate", cov, "must be either a factor or numeric."))
+    cov_num <- as.numeric(data[[cov]]) - 1
+  } else {
+    cov_num <- as.numeric(data[[cov]])
+  }
+  # Mean-center the covariate (required for double-mean-centering of products)
+  cov_centered <- cov_num - mean(cov_num, na.rm = TRUE)
+  data[[paste0(cov, "_cent")]] <- cov_centered
+
+  # ---- Create product indicators using semTools::indProd ----
+  # This implements the double-mean-centering strategy (Lin et al., 2010)
+  # var1 = items, var2 = centered covariate, doubleMC = TRUE
+  prod_data <- semTools::indProd(
+    data = data,
+    var1 = items,
+    var2 = paste0(cov, "_cent"),
+    doubleMC = TRUE,
+    match = FALSE
+  )
+  # Product column names are "item.cov_cent"
+  prod_names <- paste0(items, ".", cov, "_cent")
+  if (!all(prod_names %in% names(prod_data))) {
+    stop("Product indicator columns were not created correctly.")
   }
 
-  df_pi <- scripty::prods(df = data[, c(items, cov)],
-                          covname = cov,
-                          match.op = FALSE,
-                          doubleMC.op = TRUE)
+  # ---- Build MIMIC model syntax with latent factors and product indicators ----
+  cov_lat <- paste0(cov, "lat")      # latent variable for the covariate
+  int_fac <- paste0("LFacX", cov)    # latent interaction factor
 
-  model_mimic <- paste0(
-    lvname, " =~ ", paste(items, collapse = " + "), "\n",
-    cov_lat, " =~ ", cov, "\n",
-    paste0("LFacX", cov, " =~ ", paste0(items, ".", cov, collapse = " + "), "\n"),
-    paste(paste0(items, " ~~ ", items, ".", cov), collapse = "\n")
-  )
+  # Factor definitions
+  syntax_lv <- paste0(lvname, " =~ ", paste(items, collapse = " + "))
+  syntax_cov <- paste0(cov_lat, " =~ 1*", paste0(cov, "_cent"), "\n",
+                       paste0(cov, "_cent"), " ~~ 0*", paste0(cov, "_cent"))
+  syntax_int <- paste0(int_fac, " =~ ", paste(prod_names, collapse = " + "))
 
+  # Residual covariances between each item and its product indicator
+  residual_cov <- paste(paste0(items, " ~~ ", items, ".", cov, "_cent"), collapse = "\n")
+
+  # Assemble full model
+  model_mimic <- paste(syntax_lv, syntax_cov, syntax_int, residual_cov, sep = "\n")
+
+  # ---- Fit the MIMIC model ----
   fit <- lavaan::cfa(model_mimic,
-                     data = df_pi,
+                     data = prod_data,
                      estimator = est,
                      meanstructure = TRUE)
 
-  mimic_param <- scripty::mimicparam(fit)
+  # ---- Internal function: generate parameters for score tests ----
+  # Replaces scripty::mimicparam; returns both flat and grouped lists
+  generate_mimic_params <- function(items, cov_lat, int_fac) {
+    # Flat list: one formula per parameter (for univariate tests)
+    flat_params <- character(length(items) * 2)
+    # Grouped by item: each element contains the two formulas for the same item (for global test, 2 df)
+    grouped_params <- vector("list", length(items))
+    names(grouped_params) <- items
 
-  # --- Función interna para extraer resultados ---
-  mimicout_modificado <- function(fit.mimic, mimic.param, cov, Oort.adj, p.crit) {
+    for (i in seq_along(items)) {
+      flat_params[2*i - 1] <- paste0(items[i], " ~ ", cov_lat)
+      flat_params[2*i]     <- paste0(items[i], " ~ ", int_fac)
+      grouped_params[[i]] <- c(paste0(items[i], " ~ ", cov_lat),
+                               paste0(items[i], " ~ ", int_fac))
+    }
+    return(list(flat = flat_params, grouped = grouped_params))
+  }
+
+  params <- generate_mimic_params(items, cov_lat, int_fac)
+
+  # ---- Internal function: extract DIF results and SEPC ----
+  # Modified from original to handle grouped parameters for global test
+  mimicout_modificado <- function(fit.mimic, params, cov, Oort.adj, p.crit) {
+    # Extract parameter estimates
     ests <- as.data.frame(lavaan::parameterestimates(fit.mimic))
     uniqnames <- unique(ests$lhs)
     lvname <- uniqnames[1]
 
-    any.out <- do.call(rbind, lapply(mimic.param, function(x)
-      lavaan::lavTestScore(fit.mimic, add = x)$test))
+    # ---- Global test (2 df per item) using grouped parameters ----
+    # For each item, pass its two parameters together to lavTestScore
+    global_test <- do.call(rbind, lapply(params$grouped, function(x) {
+      lavaan::lavTestScore(fit.mimic, add = x)$test
+    }))
 
-    sep.out <- lavaan::lavTestScore(fit.mimic, add = as.character(mimic.param))
+    # ---- Univariate tests (1 df per parameter) using flat list ----
+    uni_test <- lavaan::lavTestScore(fit.mimic, add = as.character(params$flat))
 
-    # Baseline chi2 and df
+    # ---- Baseline chi2 and df for Oort adjustment ----
     baseline <- fit.mimic@test$standard
     chi0 <- as.numeric(baseline[["stat"]])
     df0  <- as.numeric(baseline[["df"]])
@@ -189,50 +236,50 @@ piMIMIC <- function(data, items, cov, lvname = "LatFact", est = "MLM",
       crit.uniform <- (chi0 / (K_uniform + df0 - 1)) * K_uniform
     }
 
-    # DIF.Global
+    # ---- DIF.Global (now one row per item) ----
     df_dif_global <- data.frame(
       Item = items,
-      Chi2 = round(any.out$X2, 3),
-      df = any.out$df,
-      p.value = round(any.out$p, 4)
+      Chi2 = round(global_test$X2, 3),
+      df = global_test$df,
+      p.value = round(global_test$p, 4)
     )
     if (Oort.adj) df_dif_global$crit.Oort <- round(crit.global, 3)
 
-    # DIF.Uniforme
-    oddnum <- seq(1, length(sep.out$uni$lhs), 2)
+    # ---- DIF.Uniforme (extract odd indices: direct effects) ----
+    oddnum <- seq(1, length(uni_test$uni$lhs), 2)
     df_dif_uniforme <- data.frame(
-      Item = gsub("~.*$", "", sep.out$uni$lhs[oddnum]),
-      Chi2 = round(sep.out$uni$X2[oddnum], 3),
-      df = sep.out$uni$df[oddnum],
-      p.value = round(sep.out$uni$p.value[oddnum], 4)
+      Item = gsub("~.*$", "", uni_test$uni$lhs[oddnum]),
+      Chi2 = round(uni_test$uni$X2[oddnum], 3),
+      df = uni_test$uni$df[oddnum],
+      p.value = round(uni_test$uni$p.value[oddnum], 4)
     )
     if (Oort.adj) df_dif_uniforme$crit.Oort <- round(crit.uniform, 3)
 
-    # DIF.NoUniforme
-    evennum <- seq(2, length(sep.out$uni$lhs), 2)
+    # ---- DIF.NoUniforme (extract even indices: interaction effects) ----
+    evennum <- seq(2, length(uni_test$uni$lhs), 2)
     df_dif_nouniforme <- data.frame(
-      Item = gsub("~.*$", "", sep.out$uni$lhs[evennum]),
-      Chi2 = round(sep.out$uni$X2[evennum], 3),
-      df = sep.out$uni$df[evennum],
-      p.value = round(sep.out$uni$p.value[evennum], 4)
+      Item = gsub("~.*$", "", uni_test$uni$lhs[evennum]),
+      Chi2 = round(uni_test$uni$X2[evennum], 3),
+      df = uni_test$uni$df[evennum],
+      p.value = round(uni_test$uni$p.value[evennum], 4)
     )
     if (Oort.adj) df_dif_nouniforme$crit.Oort <- round(crit.uniform, 3)
 
-    # SEPC
+    # ---- SEPC (standardized expected parameter change) ----
     sepc_values <- lavaan::lavTestScore(fit.mimic,
-                                        add = as.character(mimic.param),
+                                        add = as.character(params$flat),
                                         univariate = TRUE,
                                         standardized = TRUE,
                                         cov.std = TRUE,
                                         epc = TRUE)$epc
 
     df_sepc <- sepc_values[sepc_values$lhs %in% items &
-                             sepc_values$rhs %in% c(paste0(cov, "lat"), paste0("LFacX", cov)),
+                             sepc_values$rhs %in% c(cov_lat, int_fac),
                            c("lhs", "op", "rhs", "epc", "sepc.all")]
 
     colnames(df_sepc) <- c("Item", "Operator", "Effect", "EPC", "SEPC.ALL")
-    df_sepc_u <- df_sepc[grepl("lat$", df_sepc$Effect), ]
-    df_sepc_nu <- df_sepc[grepl("^LFacX", df_sepc$Effect), ]
+    df_sepc_u <- df_sepc[grepl(paste0(cov_lat, "$"), df_sepc$Effect), ]
+    df_sepc_nu <- df_sepc[grepl(paste0("^", int_fac), df_sepc$Effect), ]
 
     return(list(
       DIF.Global = df_dif_global,
@@ -243,7 +290,8 @@ piMIMIC <- function(data, items, cov, lvname = "LatFact", est = "MLM",
     ))
   }
 
-  resultados_DIF <- mimicout_modificado(fit, mimic_param, cov, Oort.adj, p.crit)
+  # ---- Extract results ----
+  resultados_DIF <- mimicout_modificado(fit, params, cov, Oort.adj, p.crit)
   resultados_DIF$fit <- fit
   return(resultados_DIF)
 }
