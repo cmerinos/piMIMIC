@@ -5,6 +5,6 @@ authors:
   given-names: "Cesar"
   orcid: "https://orcid.org/0000-0000-0000-0000"
 title: "piMIMIC: R package for DIF detection using Product of Indicators (PI) for MIMIC/RFA Models"
-version: 0.1.0
-date-released: 2025-02-22
-url: "https://github.com/cmerinos/piRFA"
+version: 0.4.0
+date-released: 2026-08-20
+url: "https://github.com/cmerinos/piMIMIC"
