@@ -9,14 +9,13 @@ Description: Provides functions to analyze differential item functioning (DIF) u
     likelihood ratio and Score tests for global, uniform, and non-uniform DIF detection, 
     as well effect sizes estimation through a fixed-to-zero parameter release strategy, and 
     squared-R differences. The implementation follows the conceptual work of Kolbe and 
-    Jorgensen, and utilizes functions from the 'lavaan' and 'scripty' packages, among others.
+    Jorgensen, and utilizes functions from the 'lavaan' and 'semTools' packages, among others.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
 Depends: R (>= 4.0.0)
 Imports:
     lavaan,
-    scripty,
     ggplot2,
     dplyr,
     tidyr,
