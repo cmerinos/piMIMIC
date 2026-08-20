@@ -1,3 +1,5 @@
+# piMIMIC 0.3.1
+
 # piMIMIC 0.3.0 (2026-08-20)
 
 - Removed dependency on the `scripty` package.
