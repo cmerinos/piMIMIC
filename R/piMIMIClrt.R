@@ -32,6 +32,36 @@
 #' \item{constrained_fits}{If `return_models=TRUE`, a nested list of fitted models (only for fixed anchors).}
 #'
 #' @details
+#' The procedure computes **ΔR²** as a measure of effect size, representing the
+#' change in the proportion of variance explained for that item between a
+#' constrained and an unconstrained model. Specifically:
+#'
+#' * **Global DIF** (2 df): compares the full model (with both direct and
+#'   interaction effects for the item) against a model with **both** effects fixed
+#'   to zero. ΔR² = R²(full) - R²(both fixed).
+#' * **Non‑uniform DIF** (1 df): compares the full model against a model where
+#'   the **interaction effect** is fixed to zero (while the direct effect remains
+#'   free). ΔR² = R²(full) - R²(interaction fixed).
+#' * **Uniform DIF** (1 df): compares the full model against a model where the
+#'   **direct effect** of the covariate is fixed to zero (while the interaction
+#'   remains free). ΔR² = R²(full) - R²(direct fixed).
+#'
+#' This sequential logic (global → non‑uniform → uniform) is consistent with
+#' common DIF detection strategies, such as those used in **ordinal logistic
+#' regression** (e.g., Zumbo, 1999), where the interaction
+#' term is tested first, followed by the group effect.
+#'
+#' The R² values are extracted from `lavaan::lavInspect(fit, "rsquare")` for the
+#' specific item being tested. These ΔR² values complement the significance tests
+#' by quantifying the practical impact of DIF, with larger values indicating a
+#' stronger effect.
+#'
+#' The function allows flexible specification of anchor items (see argument
+#' `anchor`), including the `"rest"` option which iteratively tests each item
+#' against all others as anchors, following the "un‑contra‑todos" approach
+#' (Oort, 1998). It also includes an optional Oort adjustment to control Type I
+#' error inflation in the LRT.
+#'
 #' The `"rest"` approach (Oort, 1998) evaluates each item against all other items as
 #' anchors. This is a robust alternative when no prior anchor set is available.
 #'
@@ -48,6 +78,11 @@
 #' Kolbe, L., & Jorgensen, T. D. (2018). Using product indicators in restricted
 #' factor analysis models to detect nonuniform measurement bias.
 #' In *Quantitative Psychology* (pp. 235–245). Springer.
+#'
+#' Zumbo, B. D. (1999). A handbook on the theory and methods of differential item
+#' functioning (DIF): Logistic regression modeling as a unitary framework for binary
+#' and Likert-type (ordinal) item scores. Directorate of Human Resources Research
+#' and Evaluation, Department of National Defence.
 #'
 #' @importFrom lavaan cfa lavTestLRT lavInspect
 #' @importFrom semTools indProd
