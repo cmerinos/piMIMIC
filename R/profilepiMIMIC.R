@@ -68,13 +68,13 @@
 #'                           est = "ulsmv", Oort.adj = FALSE)
 #'
 #' Basic profile plot
-#' piMIMIC.profile(resultados = resultado.gender,
+#' profilepiMIMIC(resultados = resultado.gender,
 #'               data = data.bfi,
 #'               item = "N3",
 #'               cov = "gender")
 #'
 #' # Customized plot with labels and parameter type
-#' piMIMIC.profile(resultados = resultado.gender,
+#' profilepiMIMIC(resultados = resultado.gender,
 #'               data = data.bfi,
 #'               item = "N1",
 #'               cov = "gender",
@@ -85,7 +85,7 @@
 #' }
 #'
 #' @export
-piMIMIC.profile <- function(resultados, data, item, cov,
+profilepiMIMIC <- function(resultados, data, item, cov,
                           thetaRange = c(-3, 3),
                           nPoints = 200,
                           themeOption = ggplot2::theme_minimal(),

@@ -1,4 +1,7 @@
-# piMIMIC 0.3.1
+# piMIMIC 0.3.1 (2026-08-20)
+- Cambio de nombre, piMIMIC.plot => plotpiMIMIC
+- Actualizacion de plotpiMIMIC, compatible con piMIMIC()
+- Cambio de nombre, piMIMIC.profile => profileiMIMIC
 
 # piMIMIC 0.3.0 (2026-08-20)
 
