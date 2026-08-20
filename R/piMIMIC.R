@@ -24,8 +24,8 @@
 #' @details
 #' This function implements Differential Item Functioning (DIF) analysis using the Product of Indicators approach
 #' (PI; Kolbe & Jorgensen, 2018) within the Restricted Factor Analysis (RFA; Oort, 1998) framework. This method operates
-#' under a MIMIC scheme (Finch, 2005), incorporating latent variable interactions using PI (Kolbe et al., 2018, 2019;
-#' Kolbe, Jorgensen, & Molenaar, 2020). It allows for the evaluation of uniform (uDIF) and non-uniform DIF (nuDIF)
+#' under a MIMIC scheme (Finch, 2005), incorporating latent variable interactions using PI; see Kolbe et al. (2018, 2019),
+#' Kolbe, Jorgensen, & Molenaar (2020). It allows for the evaluation of uniform (uDIF) and non-uniform DIF (nuDIF)
 #' with covariates that can be categorical (e.g., sex) or continuous (e.g., self-esteem, conscientiousness).
 #'
 #' Estimation is performed via lavaan::cfa, and DIF statistical tests are based on the Score test (Lagrange Multiplier
@@ -58,8 +58,10 @@
 #'         the conventional critical value (via \code{p.value}) and the Oort-adjusted critical value.
 #'   \item This comparison allows assessment of how conclusions may differ when controlling for
 #'         potential inflation of Type I error in MIMIC-PI models.
+#'         }
 #'
 #' @examples
+#' \donttest{
 #' ### Example 1: simulated data -------------
 #' set.seed(123)
 #' Exmp1.data <- data.frame(
@@ -87,6 +89,7 @@
 #'                  lvname = "Neuroticism", est = "MLM",
 #'                  Oort.adj = TRUE, p.crit = 0.05)
 #' res.bfi$DIF.Global
+#' }
 #'
 #' @references
 #' Kim, E. S., Yoon, M., & Lee, T. (2011). Testing Measurement Invariance Using MIMIC:
@@ -121,6 +124,8 @@
 #'
 #' @importFrom lavaan cfa lavTestScore parameterestimates
 #' @importFrom semTools indProd
+#' @importFrom stats qchisq
+#'
 #' @export
 piMIMIC <- function(data, items, cov, lvname = "LatFact", est = "MLM",
                     Oort.adj = FALSE, p.crit = 0.05) {

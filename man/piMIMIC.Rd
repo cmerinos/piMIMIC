@@ -25,7 +25,7 @@ piMIMIC(
 
 \item{est}{Estimator for lavaan (default "MLM").}
 
-\item{Oort.adj}{Logical; if `TRUE`, applies Oort's adjustment to the critical value.}
+\item{Oort.adj}{Logical; if \code{TRUE}, applies Oort's adjustment to the critical value.}
 
 \item{p.crit}{Numeric; significance level for the Oort adjustment.}
 }
@@ -44,9 +44,46 @@ uniform and non‑uniform DIF using the score test (modification indices).
 Optionally applies Oort's critical value adjustment to control Type I error.
 }
 \details{
+This function implements Differential Item Functioning (DIF) analysis using the Product of Indicators approach
+(PI; Kolbe & Jorgensen, 2018) within the Restricted Factor Analysis (RFA; Oort, 1998) framework. This method operates
+under a MIMIC scheme (Finch, 2005), incorporating latent variable interactions using PI; see Kolbe et al. (2018, 2019),
+Kolbe, Jorgensen, & Molenaar (2020). It allows for the evaluation of uniform (uDIF) and non-uniform DIF (nuDIF)
+with covariates that can be categorical (e.g., sex) or continuous (e.g., self-esteem, conscientiousness).
 
+Estimation is performed via lavaan::cfa, and DIF statistical tests are based on the Score test (Lagrange Multiplier
+test used to evaluate fixed or constrained parameters). By default, chi-square tests compare an unrestricted model
+(with covariate effect and interaction parameters freely estimated) and a restricted model (with these parameters
+fixed to zero), using the standard chi-square distribution.
+
+Simulation studies (Oort, 1992, 1998; Kim, Yoon & Lee, 2011) have shown that
+the LR test under MIMIC may suffer from inflated Type I error rates. To address this, Oort proposed
+a correction of the chi-square critical value:
+
+\deqn{K^\prime = (\chi^2_0 / (K + df_0 - 1)) * K}
+where \eqn{\chi^2_0} and \eqn{df_0} are from the baseline (full invariance) model, and \eqn{K} is
+the original critical value. This adjustment is recommended when the baseline
+model shows evidence of misfit (\eqn{\chi^2_0 / df_0 > 1}), as it helps control Type I error.
+
+where:
+\itemize{
+\item \eqn{K^\prime} is the adjusted critical value,
+\item \eqn{K} is the original critical value from the chi-square distribution at significance level \eqn{p.crit},
+\item \eqn{\chi^2_0} is the chi-square statistic of the baseline model,
+\item \eqn{df_0} is the corresponding degrees of freedom of the baseline model.
+}
+
+Interpretation:
+\itemize{
+\item The reported \code{p.value} corresponds to the standard chi-square test.
+\item When \code{Oort.adj = TRUE}, the function also reports the adjusted critical value (\code{crit.Oort}).
+\item Users can compare the observed chi-square statistic against both thresholds:
+the conventional critical value (via \code{p.value}) and the Oort-adjusted critical value.
+\item This comparison allows assessment of how conclusions may differ when controlling for
+potential inflation of Type I error in MIMIC-PI models.
+}
 }
 \examples{
+\donttest{
 ### Example 1: simulated data -------------
 set.seed(123)
 Exmp1.data <- data.frame(
@@ -74,36 +111,37 @@ res.bfi <- piMIMIC(data = data.bfi, items = neuro.items, cov = "gender",
                  lvname = "Neuroticism", est = "MLM",
                  Oort.adj = TRUE, p.crit = 0.05)
 res.bfi$DIF.Global
+}
 
 }
 \references{
 Kim, E. S., Yoon, M., & Lee, T. (2011). Testing Measurement Invariance Using MIMIC:
-Likelihood Ratio Test With a Critical Value Adjustment. *Educational and Psychological Measurement, 72*(3), 469–492.
+Likelihood Ratio Test With a Critical Value Adjustment. \emph{Educational and Psychological Measurement, 72}(3), 469–492.
 https://doi.org/10.1177/0013164411427395
 
-Oort, F. J. (1992). Using restricted factor analysis to detect item bias. *Psychological Methods*, 37, 547–567.
+Oort, F. J. (1992). Using restricted factor analysis to detect item bias. \emph{Psychological Methods}, 37, 547–567.
 
 Oort, F. J. (1998). Simulation study of item bias detection with restricted factor analysis.
-*Structural Equation Modeling*, 5, 107–124.
+\emph{Structural Equation Modeling}, 5, 107–124.
 
 French, B. F., & Finch, W. H. (2008). Multigroup confirmatory factor analysis: Locating the invariant referent variables.
-*Structural Equation Modeling*, 15(1), 96–113.
+\emph{Structural Equation Modeling}, 15(1), 96–113.
 
 Stark, S., Chernyshenko, O. S., & Drasgow, F. (2006). Detecting differential item functioning with confirmatory factor analysis and item response theory: Toward a unified strategy.
-*Journal of Applied Psychology*, 91(6), 1292–1306.
+\emph{Journal of Applied Psychology}, 91(6), 1292–1306.
 
 Kolbe, L., & Jorgensen, T. D. (2018). Using product indicators in restricted factor analysis models to detect nonuniform measurement bias.
-In *Quantitative Psychology* (pp. 235–245). Springer.
+In \emph{Quantitative Psychology} (pp. 235–245). Springer.
 
 Kolbe, L., & Jorgensen, T. D. (2019). Using restricted factor analysis to select anchor items and detect differential item functioning.
-*Behavior Research Methods*, 51, 138–151.
+\emph{Behavior Research Methods}, 51, 138–151.
 
 Kolbe, L., Jorgensen, T. D., & Molenaar, D. (2020). The Impact of Unmodeled Heteroskedasticity on Assessing Measurement Invariance in Single-group Models.
-*Structural Equation Modeling*, 28(1), 82–98.
+\emph{Structural Equation Modeling}, 28(1), 82–98.
 
 Whittaker, T. A. (2012). Estimation of Standardized Expected Parameter Change for DIF Detection.
-*Educational and Psychological Measurement*, 72(3), 342-357.
+\emph{Educational and Psychological Measurement}, 72(3), 342-357.
 
 Garnier-Villarreal, M., & Jorgensen, T. D. (2024). Evaluating Local Model Misspecification with Modification Indices in Bayesian Structural Equation Modeling.
-*Structural Equation Modeling*, 1–15.
+\emph{Structural Equation Modeling}, 1–15.
 }

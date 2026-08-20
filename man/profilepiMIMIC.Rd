@@ -17,82 +17,82 @@ profilepiMIMIC(
 )
 }
 \arguments{
-\item{resultados}{Output object from the `piMIMIC()` function.}
+\item{resultados}{Output object from the \code{piMIMIC()} function.}
 
-\item{data}{The dataset used in the `piMIMIC()` analysis.}
+\item{data}{The dataset used in the \code{piMIMIC()} analysis.}
 
 \item{item}{The name of the item to be plotted (as a character string).}
 
-\item{cov}{The name of the grouping covariate used in `piMIMIC()` (as a character string).}
+\item{cov}{The name of the grouping covariate used in \code{piMIMIC()} (as a character string).}
 
 \item{thetaRange}{A numeric vector of length 2 specifying the latent trait range (default is -3 to 3).}
 
 \item{nPoints}{Number of evaluation points along the latent trait (default = 200).}
 
-\item{themeOption}{A `ggplot2` theme object to customize the plot appearance.
+\item{themeOption}{A \code{ggplot2} theme object to customize the plot appearance.
 Common options include:
-`theme_minimal()` (default), `theme_bw()`, `theme_classic()`,
-`theme_light()`, `theme_dark()`, `theme_void()`, `theme_gray()`, `theme_linedraw()`,
-`theme_test()` and others.}
+\code{theme_minimal()} (default), \code{theme_bw()}, \code{theme_classic()},
+\code{theme_light()}, \code{theme_dark()}, \code{theme_void()}, \code{theme_gray()}, \code{theme_linedraw()},
+\code{theme_test()} and others.}
 
 \item{labels}{Optional vector of labels for the groups. If NULL, the original group names are used.}
 
 \item{parType}{Type of parameters to be used when computing the expected curves:
 \itemize{
-  \item `"none"`: Ignores parameter estimates from `lavaan` and fixes `Intercept = 0`, `Loading = 1`.
-  \item `"unstd"`: Uses unstandardized estimates (`est`) from the fitted `lavaan` model (original scale of the item).
-  \item `"std"`: Uses standardized estimates (`std.all`) from the fitted `lavaan` model (standardized metric).
+\item \code{"none"}: Ignores parameter estimates from \code{lavaan} and fixes \code{Intercept = 0}, \code{Loading = 1}.
+\item \code{"unstd"}: Uses unstandardized estimates (\code{est}) from the fitted \code{lavaan} model (original scale of the item).
+\item \code{"std"}: Uses standardized estimates (\code{std.all}) from the fitted \code{lavaan} model (standardized metric).
 }}
 }
 \value{
-A `ggplot2` object showing the DIF profile for PI-MIMIC output
+A \code{ggplot2} object showing the DIF profile for PI-MIMIC output
 (Multiple-Indicators Multiple-Causes with Product of Indicators).
 }
 \description{
-This function plots the expected response curves (linear prediction) across levels of the latent trait (θ)
-for each group defined by a covariate. It is useful to visually inspect DIF—especially non-uniform DIF.
+This function plots the expected response curves (linear prediction) across levels of the latent trait (theta)
+for each group defined by a covariate. It is useful to visually inspect DIF-especially non-uniform DIF.
 }
 \details{
-The function uses the parameter estimates from `piMIMIC()` to compute predicted responses
+The function uses the parameter estimates from \code{piMIMIC()} to compute predicted responses
 for each group along a latent variable continuum. It is especially helpful in visualizing
 non-uniform DIF, where the slope or pattern of response varies by group.
 
 The formula used is a linear prediction:
-\deqn{y = intercept + loading * theta + direct_effect * group + interaction * (theta × group)}
+\deqn{y = intercept + loading * theta + direct_effect * group + interaction * (theta * group)}
 
-The `parType` argument controls how the intercept and loading are determined
+The \code{parType} argument controls how the intercept and loading are determined
 when computing the expected response curves. Each option provides a different
 perspective on the DIF effects:
 
 \describe{
-  \item{\code{"none"}}{The intercept is fixed at 0 and the loading at 1.
-  Only the DIF effects (direct and interaction) are used to compute the curves.
-  This option **isolates the pure DIF component**, making it the most
-  informative choice for visually assessing the direction and magnitude of
-  uniform and non‑uniform DIF. The plot shows how group membership changes
-  the expected response directly (vertical shift) and through interaction
-  with the latent trait (slope change). This is the recommended setting for
-  most DIF visualizations.}
+\item{\code{"none"}}{The intercept is fixed at 0 and the loading at 1.
+Only the DIF effects (direct and interaction) are used to compute the curves.
+This option \strong{isolates the pure DIF component}, making it the most
+informative choice for visually assessing the direction and magnitude of
+uniform and non-uniform DIF. The plot shows how group membership changes
+the expected response directly (vertical shift) and through interaction
+with the latent trait (slope change). This is the recommended setting for
+most DIF visualizations.}
 
-  \item{\code{"unstd"}}{Uses the **unstandardized** estimates (`est`) from the
-  fitted lavaan model for the intercept and loading. The DIF effects are
-  taken from the `EPC` column (unstandardized expected parameter change).
-  This option produces predictions on the **original metric** of the item
-  (e.g., the Likert scale). It is useful if you want to see the full
-  expected response curve for each group, but the DIF effects may be less
-  apparent because the overall item shape dominates the plot.}
+\item{\code{"unstd"}}{Uses the \strong{unstandardized} estimates (\code{est}) from the
+fitted lavaan model for the intercept and loading. The DIF effects are
+taken from the \code{EPC} column (unstandardized expected parameter change).
+This option produces predictions on the \strong{original metric} of the item
+(e.g., the Likert scale). It is useful if you want to see the full
+expected response curve for each group, but the DIF effects may be less
+apparent because the overall item shape dominates the plot.}
 
-  \item{\code{"std"}}{Uses the **standardized** estimates (`std.all`) from the
-  fitted lavaan model for the intercept and loading. The DIF effects are
-  taken from the `SEPC.ALL` column (standardized expected parameter change).
-  This option produces predictions on a **standardized metric**, making the
-  curves directly comparable across items with different scales. However,
-  interpretation of the actual item response values is less intuitive, and
-  the DIF effects may be obscured by the standardized scale. This option is
-  primarily useful for researchers interested in standardized comparisons.}
+\item{\code{"std"}}{Uses the \strong{standardized} estimates (\code{std.all}) from the
+fitted lavaan model for the intercept and loading. The DIF effects are
+taken from the \code{SEPC.ALL} column (standardized expected parameter change).
+This option produces predictions on a \strong{standardized metric}, making the
+curves directly comparable across items with different scales. However,
+interpretation of the actual item response values is less intuitive, and
+the DIF effects may be obscured by the standardized scale. This option is
+primarily useful for researchers interested in standardized comparisons.}
 }
 
-**Recommendation**: For the clearest visualization of DIF, use \code{parType = "none"}.
+\strong{Recommendation}: For the clearest visualization of DIF, use \code{parType = "none"}.
 It highlights the group differences that are attributable solely to DIF,
 without being confounded by the item's overall difficulty or discrimination.
 The other options are complementary and may be useful for specific analytical

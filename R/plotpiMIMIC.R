@@ -34,9 +34,9 @@
 #' plotpiMIMIC(res, cov = "gender", metric = "EPC", cutoff.line = c(-0.10, 0.10))
 #' }
 #'
-#' @importFrom ggplot2 ggplot aes geom_bar geom_hline coord_flip labs
-#'             scale_fill_manual theme_minimal
-#' @importFrom rlang sym
+#' @importFrom ggplot2 ggplot aes geom_bar geom_hline coord_flip labs scale_fill_manual theme_minimal
+#' @importFrom rlang sym .data
+#'
 #' @export
 plotpiMIMIC <- function(resultados, cov,
                         metric = "SEPC.ALL",
@@ -76,9 +76,9 @@ plotpiMIMIC <- function(resultados, cov,
 
   # Build the plot
   p <- ggplot2::ggplot(df_combined,
-                       ggplot2::aes(x = Item,
+                       ggplot2::aes(x = .data$Item,
                                     y = !!rlang::sym(metric),
-                                    fill = Type)) +
+                                    fill = .data$Type)) +
     ggplot2::geom_bar(stat = "identity", position = "dodge") +
     ggplot2::coord_flip() +
     ggplot2::labs(

@@ -18,20 +18,20 @@ plotpiMIMIC(
 
 \item{cov}{Name of the covariate used in \code{\link{piMIMIC}}.}
 
-\item{metric}{Character. Metric to plot: either `"EPC"` or `"SEPC.ALL"`
-(default is `"SEPC.ALL"`).}
+\item{metric}{Character. Metric to plot: either \code{"EPC"} or \code{"SEPC.ALL"}
+(default is \code{"SEPC.ALL"}).}
 
-\item{theme_option}{ggplot2 theme (default is `theme_minimal()`).}
+\item{theme_option}{ggplot2 theme (default is \code{theme_minimal()}).}
 
 \item{bar_colors}{Named character vector. Colors for DIF types.
-Default: `c("Uniform DIF" = "blue", "Non-uniform DIF" = "red")`.}
+Default: \code{c("Uniform DIF" = "blue", "Non-uniform DIF" = "red")}.}
 
 \item{cutoff.line}{Numeric or vector. Optional horizontal line(s) indicating
-a DIF cutoff. If `NULL` (default), no line is drawn.
-Example: `c(-0.10, 0.10)`.}
+a DIF cutoff. If \code{NULL} (default), no line is drawn.
+Example: \code{c(-0.10, 0.10)}.}
 }
 \value{
-A ggplot bar plot, or `NULL` if insufficient data.
+A ggplot bar plot, or \code{NULL} if insufficient data.
 }
 \description{
 Generates bar plots of unstandardized (EPC) or standardized (SEPC.ALL)
@@ -39,12 +39,12 @@ expected parameter change for uniform and non‑uniform DIF, facilitating
 the interpretation of DIF effects from \code{\link{piMIMIC}} output.
 }
 \details{
-`plotpiMIMIC` requires as input the output list from `piMIMIC`, specifically
-the `$SEPC.uDIF` and `$SEPC.nuDIF` components. It combines them and plots
+\code{plotpiMIMIC} requires as input the output list from \code{piMIMIC}, specifically
+the \verb{$SEPC.uDIF} and \verb{$SEPC.nuDIF} components. It combines them and plots
 either the unstandardized (EPC) or standardized (SEPC.ALL) expected parameter
 change for each item, with separate bars for uniform and non‑uniform DIF.
 
-The function uses `ggplot2`. If the data are missing, it returns `NULL` with
+The function uses \code{ggplot2}. If the data are missing, it returns \code{NULL} with
 a warning.
 }
 \examples{

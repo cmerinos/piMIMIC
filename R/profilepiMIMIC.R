@@ -1,7 +1,7 @@
 #' Profile Plot of DIF for PI-MIMIC Output (Product of Indicators within a Multiple-Indicators Multiple-Causes Framework)
 #'
-#' This function plots the expected response curves (linear prediction) across levels of the latent trait (θ)
-#' for each group defined by a covariate. It is useful to visually inspect DIF—especially non-uniform DIF.
+#' This function plots the expected response curves (linear prediction) across levels of the latent trait (theta)
+#' for each group defined by a covariate. It is useful to visually inspect DIF-especially non-uniform DIF.
 #'
 #' @param resultados Output object from the `piMIMIC()` function.
 #' @param data The dataset used in the `piMIMIC()` analysis.
@@ -28,7 +28,7 @@
 #' non-uniform DIF, where the slope or pattern of response varies by group.
 #'
 #' The formula used is a linear prediction:
-#' \deqn{y = intercept + loading * theta + direct_effect * group + interaction * (theta × group)}
+#' \deqn{y = intercept + loading * theta + direct_effect * group + interaction * (theta * group)}
 #'
 #' The `parType` argument controls how the intercept and loading are determined
 #' when computing the expected response curves. Each option provides a different
@@ -39,7 +39,7 @@
 #'   Only the DIF effects (direct and interaction) are used to compute the curves.
 #'   This option **isolates the pure DIF component**, making it the most
 #'   informative choice for visually assessing the direction and magnitude of
-#'   uniform and non‑uniform DIF. The plot shows how group membership changes
+#'   uniform and non-uniform DIF. The plot shows how group membership changes
 #'   the expected response directly (vertical shift) and through interaction
 #'   with the latent trait (slope change). This is the recommended setting for
 #'   most DIF visualizations.}
@@ -127,16 +127,16 @@ profilepiMIMIC <- function(resultados, data, item, cov,
   parType <- match.arg(parType)
 
   groups <- unique(data[[cov]])
-  if (length(groups) < 2) stop("`cov` debe tener al menos 2 niveles.")
+  if (length(groups) < 2) stop("`cov` must have at least 2 levels.")
 
   # -------- DIF effects (uDIF / nuDIF) --------
   if (is.null(resultados$SEPC.uDIF) && is.null(resultados$SEPC.nuDIF)) {
-    stop("No se encontraron `SEPC.uDIF` ni `SEPC.nuDIF` en `resultados`.")
+    stop("No `SEPC.uDIF` or `SEPC.nuDIF` were found in `results`.")
   }
   sepc_data <- rbind(resultados$SEPC.uDIF, resultados$SEPC.nuDIF)
   coefs_item <- sepc_data[sepc_data$Item == item, , drop = FALSE]
 
-  # Elegir columna para los efectos DIF según parType
+  # Select a column for DIF effects based on parType
   sepc_col <- if (parType == "std" && "SEPC.ALL" %in% names(coefs_item)) "SEPC.ALL" else "EPC"
   if (parType == "std" && sepc_col != "SEPC.ALL") {
     warning("SEPC.ALL no disponible; usando EPC (no estandarizado) para efectos DIF.")
@@ -168,7 +168,7 @@ profilepiMIMIC <- function(resultados, data, item, cov,
             val_un  <- get1(lrow$est)
             if (!is.na(val_un)) {
               loading <- val_un
-              warning("Loading std.all es NA; se usó 'est' (no estandarizado).")
+              warning("Loading std.all es NA; using 'est' (non-standardized).")
             }
           }
         } else { # unstd
@@ -186,7 +186,7 @@ profilepiMIMIC <- function(resultados, data, item, cov,
             intercept <- val_std
           } else {
             intercept <- 0
-            message("Intercepto std.all no definido; se fijó en 0 (métrica estandarizada).")
+            message("std.all intercept not defined; set to 0 (standardized metric)).")
           }
         } else { # unstd
           val_un <- get1(irow$est)
@@ -233,11 +233,11 @@ profilepiMIMIC <- function(resultados, data, item, cov,
   }
 
   # -------- Plot --------
-  p <- ggplot2::ggplot(pred_df, ggplot2::aes(x = theta, y = predicted, color = group)) +
+  p <- ggplot2::ggplot(pred_df, ggplot2::aes(x = .data$theta, y = .data$predicted, color = .data$group)) +
     ggplot2::geom_line(linewidth = 1) +
     ggplot2::labs(
       title = paste("DIF Profile -", item),
-      x = "Latent Trait (θ)",
+      x = "Latent Trait (theta)",
       y = "Expected Response",
       color = "Group"
     ) +

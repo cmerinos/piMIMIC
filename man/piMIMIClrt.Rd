@@ -30,19 +30,21 @@ piMIMIClrt(
 \item{est}{Estimator for lavaan (default "MLM"; can be "ML", "ULS", etc.).}
 
 \item{anchor}{Must be either:
-* `"rest"`: for each item, all other items are used as anchors (iterative approach).
-* A character vector with at least two item names to be used as fixed anchors.}
+\itemize{
+\item \code{"rest"}: for each item, all other items are used as anchors (iterative approach).
+\item A character vector with at least two item names to be used as fixed anchors.
+}}
 
-\item{Oort.adj}{Logical; if `TRUE`, applies Oort's critical value adjustment.}
+\item{Oort.adj}{Logical; if \code{TRUE}, applies Oort's critical value adjustment.}
 
 \item{p.crit}{Numeric; significance level for the Oort adjustment (default 0.05).}
 
-\item{return_models}{Logical; if `TRUE`, returns the fitted model objects.}
+\item{return_models}{Logical; if \code{TRUE}, returns the fitted model objects.}
 
-\item{adjust}{Character; p-value adjustment method passed to `p.adjust`
+\item{adjust}{Character; p-value adjustment method passed to \code{p.adjust}
 (e.g., "bonferroni", "holm", "fdr"). Default "none".}
 
-\item{...}{Additional arguments passed to `lavaan::cfa`.}
+\item{...}{Additional arguments passed to \code{lavaan::cfa}.}
 }
 \value{
 A list with:
@@ -53,7 +55,7 @@ A list with:
 \item{DeltaR2.uDIF}{Data frame: Item, DeltaR² (full vs b=0 model).}
 \item{DeltaR2.nuDIF}{Data frame: Item, DeltaR² (full vs c=0 model).}
 \item{fit}{The fitted unrestricted (full) lavaan object (only for fixed anchors).}
-\item{constrained_fits}{If `return_models=TRUE`, a nested list of fitted models (only for fixed anchors).}
+\item{constrained_fits}{If \code{return_models=TRUE}, a nested list of fitted models (only for fixed anchors).}
 }
 \description{
 Implements the product indicator (PI) approach for MIMIC models to detect
@@ -62,37 +64,38 @@ models and reports change in R² as effect size. Optionally applies Oort's
 critical value adjustment to control Type I error inflation.
 }
 \details{
-The procedure computes **ΔR²** as a measure of effect size, representing the
+The procedure computes \strong{ΔR²} as a measure of effect size, representing the
 change in the proportion of variance explained for that item between a
 constrained and an unconstrained model. Specifically:
-
-* **Global DIF** (2 df): compares the full model (with both direct and
-  interaction effects for the item) against a model with **both** effects fixed
-  to zero. ΔR² = R²(full) - R²(both fixed).
-* **Non‑uniform DIF** (1 df): compares the full model against a model where
-  the **interaction effect** is fixed to zero (while the direct effect remains
-  free). ΔR² = R²(full) - R²(interaction fixed).
-* **Uniform DIF** (1 df): compares the full model against a model where the
-  **direct effect** of the covariate is fixed to zero (while the interaction
-  remains free). ΔR² = R²(full) - R²(direct fixed).
+\itemize{
+\item \strong{Global DIF} (2 df): compares the full model (with both direct and
+interaction effects for the item) against a model with \strong{both} effects fixed
+to zero. ΔR² = R²(full) - R²(both fixed).
+\item \strong{Non‑uniform DIF} (1 df): compares the full model against a model where
+the \strong{interaction effect} is fixed to zero (while the direct effect remains
+free). ΔR² = R²(full) - R²(interaction fixed).
+\item \strong{Uniform DIF} (1 df): compares the full model against a model where the
+\strong{direct effect} of the covariate is fixed to zero (while the interaction
+remains free). ΔR² = R²(full) - R²(direct fixed).
+}
 
 This sequential logic (global → non‑uniform → uniform) is consistent with
-common DIF detection strategies, such as those used in **ordinal logistic
-regression** (e.g., Zumbo, 1999), where the interaction
+common DIF detection strategies, such as those used in \strong{ordinal logistic
+regression} (e.g., Zumbo, 1999), where the interaction
 term is tested first, followed by the group effect.
 
-The R² values are extracted from `lavaan::lavInspect(fit, "rsquare")` for the
+The R² values are extracted from \code{lavaan::lavInspect(fit, "rsquare")} for the
 specific item being tested. These ΔR² values complement the significance tests
 by quantifying the practical impact of DIF, with larger values indicating a
 stronger effect.
 
 The function allows flexible specification of anchor items (see argument
-`anchor`), including the `"rest"` option which iteratively tests each item
+\code{anchor}), including the \code{"rest"} option which iteratively tests each item
 against all others as anchors, following the "un‑contra‑todos" approach
 (Oort, 1998). It also includes an optional Oort adjustment to control Type I
 error inflation in the LRT.
 
-The `"rest"` approach (Oort, 1998) evaluates each item against all other items as
+The \code{"rest"} approach (Oort, 1998) evaluates each item against all other items as
 anchors. This is a robust alternative when no prior anchor set is available.
 
 The Oort adjustment modifies the critical chi-square value:
@@ -103,11 +106,11 @@ model shows evidence of misfit (χ²₀/df₀ > 1), as it helps control Type I e
 }
 \references{
 Oort, F. J. (1998). Simulation study of item bias detection with restricted
-factor analysis. *Structural Equation Modeling, 5*, 107–124.
+factor analysis. \emph{Structural Equation Modeling, 5}, 107–124.
 
 Kolbe, L., & Jorgensen, T. D. (2018). Using product indicators in restricted
 factor analysis models to detect nonuniform measurement bias.
-In *Quantitative Psychology* (pp. 235–245). Springer.
+In \emph{Quantitative Psychology} (pp. 235–245). Springer.
 
 Zumbo, B. D. (1999). A handbook on the theory and methods of differential item
 functioning (DIF): Logistic regression modeling as a unitary framework for binary
