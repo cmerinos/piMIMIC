@@ -1,6 +1,19 @@
-# piMIMIC 0.4.0
+# piMIMIC 0.4.0 (2026-08-20)
 
+## New features
+- Added `distancepiMIMIC()`: calculates Mahalanobis distance for each item based on DIF metrics (SEPC, EPC, or ΔR²). This helps identify items with unusual DIF patterns, complementing significance tests. Includes optional plotting with cutoff lines.
 
+## Improvements
+- Renamed `piMIMIC.plot()` to `plotpiMIMIC()` for consistency with R conventions.
+- `plotpiMIMIC()` now handles cases where no cutoff line is specified, avoiding `geom_hline` errors.
+- `profilepiMIMIC()` now uses `parType = "none"` by default to isolate DIF effects.
+- Removed problematic `anchor = "none"` option from `piMIMIClrt()` to prevent identification issues.
+- Improved documentation for `piMIMIClrt()` with detailed explanation of ΔR² comparisons.
+
+## Bug fixes
+- Fixed duplication bug in `piMIMIC()` `$DIF.Global` output (now shows one row per item).
+- Resolved errors in `plotpiMIMIC()` when `cutoff.line` was not provided.
+- Eliminated dependency on `scripty` package; now uses `semTools::indProd` directly.
 
 # piMIMIC 0.3.1 (2026-08-20)
 - Cambio de nombre, piMIMIC.plot => plotpiMIMIC
