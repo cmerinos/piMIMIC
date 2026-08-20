@@ -1,7 +1,7 @@
 Package: piMIMIC
 Type: Package
 Title: Product of Indicators (PI) for MIMIC Models in DIF Detection, using SEM
-Version: 0.2.0
+Version: 0.3.0
 Authors@R: c(
     person("Cesar", "Merino-Soto", email = "sikayax@yahoo.com.ar", role = c("aut", "cre")))
 Description: Provides functions to analyze differential item functioning (DIF) using

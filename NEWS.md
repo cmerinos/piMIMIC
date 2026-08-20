@@ -1,3 +1,5 @@
+# piMIMIC 0.3.0
+
 # piMIMIC 0.2.0
 
 # piMIMIC 0.3.0 (2026-08-20)
