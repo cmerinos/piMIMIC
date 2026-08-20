@@ -60,15 +60,44 @@ non-uniform DIF, where the slope or pattern of response varies by group.
 The formula used is a linear prediction:
 \deqn{y = intercept + loading * theta + direct_effect * group + interaction * (theta × group)}
 
-The choice of `parType` determines how the parameters are applied:
-\itemize{
-  \item `"none"`: Parameters are fixed at `Intercept = 0`, `Loading = 1`, so the plot only
-  reflects the *direct* and *interaction* effects. This isolates the DIF component.
-  \item `"unstd"`: Uses unstandardized estimates (`est`) from the fitted `lavaan` model,
-  corresponding to the original observed scale of the item.
-  \item `"std"`: Uses standardized estimates (`std.all`) from the fitted `lavaan` model,
-  making the prediction curves directly comparable across items in a standardized metric.
+The `parType` argument controls how the intercept and loading are determined
+when computing the expected response curves. Each option provides a different
+perspective on the DIF effects:
+
+\describe{
+  \item{\code{"none"}}{The intercept is fixed at 0 and the loading at 1.
+  Only the DIF effects (direct and interaction) are used to compute the curves.
+  This option **isolates the pure DIF component**, making it the most
+  informative choice for visually assessing the direction and magnitude of
+  uniform and non‑uniform DIF. The plot shows how group membership changes
+  the expected response directly (vertical shift) and through interaction
+  with the latent trait (slope change). This is the recommended setting for
+  most DIF visualizations.}
+
+  \item{\code{"unstd"}}{Uses the **unstandardized** estimates (`est`) from the
+  fitted lavaan model for the intercept and loading. The DIF effects are
+  taken from the `EPC` column (unstandardized expected parameter change).
+  This option produces predictions on the **original metric** of the item
+  (e.g., the Likert scale). It is useful if you want to see the full
+  expected response curve for each group, but the DIF effects may be less
+  apparent because the overall item shape dominates the plot.}
+
+  \item{\code{"std"}}{Uses the **standardized** estimates (`std.all`) from the
+  fitted lavaan model for the intercept and loading. The DIF effects are
+  taken from the `SEPC.ALL` column (standardized expected parameter change).
+  This option produces predictions on a **standardized metric**, making the
+  curves directly comparable across items with different scales. However,
+  interpretation of the actual item response values is less intuitive, and
+  the DIF effects may be obscured by the standardized scale. This option is
+  primarily useful for researchers interested in standardized comparisons.}
 }
+
+**Recommendation**: For the clearest visualization of DIF, use \code{parType = "none"}.
+It highlights the group differences that are attributable solely to DIF,
+without being confounded by the item's overall difficulty or discrimination.
+The other options are complementary and may be useful for specific analytical
+contexts, but they are not required for understanding the presence or nature
+of DIF in your data.
 
 This function assumes a linear model and is best interpreted when DIF is suspected or detected.
 }

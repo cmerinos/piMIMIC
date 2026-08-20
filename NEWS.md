@@ -1,3 +1,5 @@
+
+
 # piMIMIC 0.3.1 (2026-08-20)
 - Cambio de nombre, piMIMIC.plot => plotpiMIMIC
 - Actualizacion de plotpiMIMIC, compatible con piMIMIC()
