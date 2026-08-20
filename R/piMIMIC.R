@@ -28,11 +28,10 @@
 #' Kolbe, Jorgensen, & Molenaar, 2020). It allows for the evaluation of uniform (uDIF) and non-uniform DIF (nuDIF)
 #' with covariates that can be categorical (e.g., sex) or continuous (e.g., self-esteem, conscientiousness).
 #'
-#' Estimation is performed via lavaan::cfa, and DIF statistical tests are based
-#' on the Score test (Lagrange Multiplier test used to evaluate fixed or constrained parameters). By default,
-#' chi-square tests compare an unrestricted model (with covariate effect and interaction parameters freely estimated)
-#' and a restricted model (with these parameters fixed to zero), using the standard chi-square
-#' distribution.
+#' Estimation is performed via lavaan::cfa, and DIF statistical tests are based on the Score test (Lagrange Multiplier
+#' test used to evaluate fixed or constrained parameters). By default, chi-square tests compare an unrestricted model
+#' (with covariate effect and interaction parameters freely estimated) and a restricted model (with these parameters
+#' fixed to zero), using the standard chi-square distribution.
 #'
 #' Simulation studies (Oort, 1992, 1998; Kim, Yoon & Lee, 2011) have shown that
 #' the LR test under MIMIC may suffer from inflated Type I error rates. To address this, Oort proposed
@@ -138,19 +137,15 @@ piMIMIC <- function(data, items, cov, lvname = "LatFact", est = "MLM",
   }
 
   # ---- Prepare covariate: convert to numeric and center ----
-  # If factor, convert to 0/1 (first level = 0, second = 1)
   if (is.factor(data[[cov]])) {
     cov_num <- as.numeric(data[[cov]]) - 1
   } else {
     cov_num <- as.numeric(data[[cov]])
   }
-  # Mean-center the covariate (required for double-mean-centering of products)
   cov_centered <- cov_num - mean(cov_num, na.rm = TRUE)
   data[[paste0(cov, "_cent")]] <- cov_centered
 
   # ---- Create product indicators using semTools::indProd ----
-  # This implements the double-mean-centering strategy (Lin et al., 2010)
-  # var1 = items, var2 = centered covariate, doubleMC = TRUE
   prod_data <- semTools::indProd(
     data = data,
     var1 = items,
@@ -158,26 +153,21 @@ piMIMIC <- function(data, items, cov, lvname = "LatFact", est = "MLM",
     doubleMC = TRUE,
     match = FALSE
   )
-  # Product column names are "item.cov_cent"
   prod_names <- paste0(items, ".", cov, "_cent")
   if (!all(prod_names %in% names(prod_data))) {
     stop("Product indicator columns were not created correctly.")
   }
 
-  # ---- Build MIMIC model syntax with latent factors and product indicators ----
-  cov_lat <- paste0(cov, "lat")      # latent variable for the covariate
-  int_fac <- paste0("LFacX", cov)    # latent interaction factor
+  # ---- Build MIMIC model syntax ----
+  cov_lat <- paste0(cov, "lat")
+  int_fac <- paste0("LFacX", cov)
 
-  # Factor definitions
   syntax_lv <- paste0(lvname, " =~ ", paste(items, collapse = " + "))
   syntax_cov <- paste0(cov_lat, " =~ 1*", paste0(cov, "_cent"), "\n",
                        paste0(cov, "_cent"), " ~~ 0*", paste0(cov, "_cent"))
   syntax_int <- paste0(int_fac, " =~ ", paste(prod_names, collapse = " + "))
-
-  # Residual covariances between each item and its product indicator
   residual_cov <- paste(paste0(items, " ~~ ", items, ".", cov, "_cent"), collapse = "\n")
 
-  # Assemble full model
   model_mimic <- paste(syntax_lv, syntax_cov, syntax_int, residual_cov, sep = "\n")
 
   # ---- Fit the MIMIC model ----
@@ -187,11 +177,8 @@ piMIMIC <- function(data, items, cov, lvname = "LatFact", est = "MLM",
                      meanstructure = TRUE)
 
   # ---- Internal function: generate parameters for score tests ----
-  # Replaces scripty::mimicparam; returns both flat and grouped lists
   generate_mimic_params <- function(items, cov_lat, int_fac) {
-    # Flat list: one formula per parameter (for univariate tests)
     flat_params <- character(length(items) * 2)
-    # Grouped by item: each element contains the two formulas for the same item (for global test, 2 df)
     grouped_params <- vector("list", length(items))
     names(grouped_params) <- items
 
@@ -207,18 +194,22 @@ piMIMIC <- function(data, items, cov, lvname = "LatFact", est = "MLM",
   params <- generate_mimic_params(items, cov_lat, int_fac)
 
   # ---- Internal function: extract DIF results and SEPC ----
-  # Modified from original to handle grouped parameters for global test
   mimicout_modificado <- function(fit.mimic, params, cov, Oort.adj, p.crit) {
-    # Extract parameter estimates
     ests <- as.data.frame(lavaan::parameterestimates(fit.mimic))
     uniqnames <- unique(ests$lhs)
     lvname <- uniqnames[1]
 
     # ---- Global test (2 df per item) using grouped parameters ----
-    # For each item, pass its two parameters together to lavTestScore
-    global_test <- do.call(rbind, lapply(params$grouped, function(x) {
-      lavaan::lavTestScore(fit.mimic, add = x)$test
-    }))
+    # IMPORTANT: lavTestScore returns multiple rows if add has multiple parameters.
+    # We only want the first row (the joint 2-df test) for each item.
+    global_list <- list()
+    for (i in seq_along(params$grouped)) {
+      test_result <- lavaan::lavTestScore(fit.mimic, add = params$grouped[[i]])$test
+      # Keep only the first row (joint test with 2 df)
+      global_list[[i]] <- test_result[1, , drop = FALSE]
+    }
+    global_test <- do.call(rbind, global_list)
+    rownames(global_test) <- NULL
 
     # ---- Univariate tests (1 df per parameter) using flat list ----
     uni_test <- lavaan::lavTestScore(fit.mimic, add = as.character(params$flat))
@@ -228,7 +219,6 @@ piMIMIC <- function(data, items, cov, lvname = "LatFact", est = "MLM",
     chi0 <- as.numeric(baseline[["stat"]])
     df0  <- as.numeric(baseline[["df"]])
 
-    # Oort adjustment (critical values)
     if (Oort.adj) {
       K_global <- qchisq(1 - p.crit, 2)
       K_uniform <- qchisq(1 - p.crit, 1)
@@ -245,7 +235,7 @@ piMIMIC <- function(data, items, cov, lvname = "LatFact", est = "MLM",
     )
     if (Oort.adj) df_dif_global$crit.Oort <- round(crit.global, 3)
 
-    # ---- DIF.Uniforme (extract odd indices: direct effects) ----
+    # ---- DIF.Uniforme (odd indices: direct effects) ----
     oddnum <- seq(1, length(uni_test$uni$lhs), 2)
     df_dif_uniforme <- data.frame(
       Item = gsub("~.*$", "", uni_test$uni$lhs[oddnum]),
@@ -255,7 +245,7 @@ piMIMIC <- function(data, items, cov, lvname = "LatFact", est = "MLM",
     )
     if (Oort.adj) df_dif_uniforme$crit.Oort <- round(crit.uniform, 3)
 
-    # ---- DIF.NoUniforme (extract even indices: interaction effects) ----
+    # ---- DIF.NoUniforme (even indices: interaction effects) ----
     evennum <- seq(2, length(uni_test$uni$lhs), 2)
     df_dif_nouniforme <- data.frame(
       Item = gsub("~.*$", "", uni_test$uni$lhs[evennum]),
@@ -265,7 +255,7 @@ piMIMIC <- function(data, items, cov, lvname = "LatFact", est = "MLM",
     )
     if (Oort.adj) df_dif_nouniforme$crit.Oort <- round(crit.uniform, 3)
 
-    # ---- SEPC (standardized expected parameter change) ----
+    # ---- SEPC ----
     sepc_values <- lavaan::lavTestScore(fit.mimic,
                                         add = as.character(params$flat),
                                         univariate = TRUE,

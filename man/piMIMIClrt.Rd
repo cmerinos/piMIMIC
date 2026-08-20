@@ -29,16 +29,15 @@ piMIMIClrt(
 
 \item{est}{Estimator for lavaan (default "MLM"; can be "ML", "ULS", etc.).}
 
-\item{anchor}{Must be one of:
-* `"rest"`: iterative "un‑contra‑todos" approach (each item tested against all others as anchors).
-* `"none"`: no fixed anchors (all items are tested against a model without effects).
-* A character vector with specific item names to use as fixed anchors (at least two recommended).}
+\item{anchor}{Must be either:
+* `"rest"`: for each item, all other items are used as anchors (iterative approach).
+* A character vector with at least two item names to be used as fixed anchors.}
 
 \item{Oort.adj}{Logical; if `TRUE`, applies Oort's critical value adjustment.}
 
 \item{p.crit}{Numeric; significance level for the Oort adjustment (default 0.05).}
 
-\item{return_models}{Logical; if `TRUE`, returns the fitted model objects (only for the last iteration if `anchor = "rest"`).}
+\item{return_models}{Logical; if `TRUE`, returns the fitted model objects.}
 
 \item{adjust}{Character; p-value adjustment method passed to `p.adjust`
 (e.g., "bonferroni", "holm", "fdr"). Default "none".}
@@ -53,8 +52,8 @@ A list with:
 \item{DeltaR2.Global}{Data frame: Item, DeltaR² (full vs no‑DIF model).}
 \item{DeltaR2.uDIF}{Data frame: Item, DeltaR² (full vs b=0 model).}
 \item{DeltaR2.nuDIF}{Data frame: Item, DeltaR² (full vs c=0 model).}
-\item{fit}{The fitted unrestricted (full) lavaan object (only for fixed anchors or `"none"`; `NULL` for `"rest"`).}
-\item{constrained_fits}{If `return_models=TRUE`, a nested list of fitted models (only for fixed anchors or `"none"`; `NULL` for `"rest"`).}
+\item{fit}{The fitted unrestricted (full) lavaan object (only for fixed anchors).}
+\item{constrained_fits}{If `return_models=TRUE`, a nested list of fitted models (only for fixed anchors).}
 }
 \description{
 Implements the product indicator (PI) approach for MIMIC models to detect
@@ -63,20 +62,11 @@ models and reports change in R² as effect size. Optionally applies Oort's
 critical value adjustment to control Type I error inflation.
 }
 \details{
-When `anchor = "rest"`, the function iterates over each item, treating all other
-items as anchors. This is the approach described in Oort (1998) and commonly used
-in MIMIC DIF detection. It does not require pre‑selected anchor items and is
-suitable when no clear anchor set is available.
-
-When `anchor = "none"`, all items are evaluated against a model with no effects
-(i.e., the baseline model is fully invariant). This is equivalent to a single‑step
-score test, but using LRT.
-
-When a character vector of item names is provided, those items are used as fixed
-anchors (they never have DIF effects). The remaining items are tested.
+The `"rest"` approach (Oort, 1998) evaluates each item against all other items as
+anchors. This is a robust alternative when no prior anchor set is available.
 
 The Oort adjustment modifies the critical chi-square value:
-\deqn{K' = (χ²₀ / (K + df₀ - 1)) * K}
+\deqn{K^\prime = (χ²₀ / (K + df₀ - 1)) * K}
 where χ²₀ and df₀ are from the baseline (full invariance) model, and K is
 the original critical value. This adjustment is recommended when the baseline
 model shows evidence of misfit (χ²₀/df₀ > 1), as it helps control Type I error.
