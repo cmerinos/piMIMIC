@@ -5,11 +5,12 @@ Version: 0.4.0
 Authors@R: c(
     person("Cesar", "Merino-Soto", email = "sikayax@yahoo.com.ar", role = c("aut", "cre")))
 Description: Provides functions to analyze differential item functioning (DIF) using
-    the Multiple Indicators Multiple Causes (MIMIC) framework. The piRFA function includes 
-    likelihood ratio and Score tests for global, uniform, and non-uniform DIF detection, 
-    as well effect sizes estimation through a fixed-to-zero parameter release strategy, and 
-    squared-R differences. The implementation follows the conceptual work of Kolbe and 
-    Jorgensen, and utilizes functions from the 'lavaan' and 'semTools' packages, among others.
+    the Multiple Indicators Multiple Causes (MIMIC) framework with product of indicators (PI). 
+    The piMIMIC function includes likelihood ratio and Score tests for global, uniform, and 
+    non-uniform DIF detection,  as well effect sizes estimation through a fixed-to-zero 
+    parameter release strategy, and squared-R differences. The implementation follows the 
+    conceptual work of Kolbe and Jorgensen, and utilizes functions from the 'lavaan' and 
+    'semTools' packages, among others.
 License: GPL-3 + file LICENSE
 Encoding: UTF-8
 LazyData: true
