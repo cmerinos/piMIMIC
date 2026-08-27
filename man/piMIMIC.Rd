@@ -31,16 +31,16 @@ piMIMIC(
 }
 \value{
 A list with:
-\item{DIF.Global}{Data frame with global DIF test (2 df): Chi², df, p-value, and Oort critical value if requested.}
+\item{DIF.Global}{Data frame with global DIF test (2 df): Chi^2, df, p-value, and Oort critical value if requested.}
 \item{DIF.Uniforme}{Data frame with uniform DIF test (1 df).}
 \item{DIF.NoUniforme}{Data frame with non‑uniform DIF test (1 df).}
 \item{SEPC.uDIF}{Standardized expected parameter change for uniform DIF.}
-\item{SEPC.nuDIF}{Standardized expected parameter change for non‑uniform DIF.}
+\item{SEPC.nuDIF}{Standardized expected parameter change for non-uniform DIF.}
 \item{fit}{The fitted lavaan object.}
 }
 \description{
 Implements the product indicator (PI) approach for MIMIC models to detect
-uniform and non‑uniform DIF using the score test (modification indices).
+uniform and non-uniform DIF using the score test (modification indices).
 Optionally applies Oort's critical value adjustment to control Type I error.
 }
 \details{
@@ -118,32 +118,33 @@ res.bfi$DIF.Global
 }
 \references{
 Kim, E. S., Yoon, M., & Lee, T. (2011). Testing Measurement Invariance Using MIMIC:
-Likelihood Ratio Test With a Critical Value Adjustment. \emph{Educational and Psychological Measurement, 72}(3), 469–492.
-https://doi.org/10.1177/0013164411427395
+Likelihood Ratio Test With a Critical Value Adjustment. \emph{Educational and Psychological Measurement, 72}(3), 469-492.
+\doi{10.1177/0013164411427395}
 
-Oort, F. J. (1992). Using restricted factor analysis to detect item bias. \emph{Psychological Methods}, 37, 547–567.
+Oort F. J. (1992). Using restricted factor analysis to detect item bias. \emph{Methodika, 6}, 150-166.
 
 Oort, F. J. (1998). Simulation study of item bias detection with restricted factor analysis.
-\emph{Structural Equation Modeling}, 5, 107–124.
+\emph{Structural Equation Modeling, 5}, 107–124. \doi{10.1080/10705519809540095}
 
 French, B. F., & Finch, W. H. (2008). Multigroup confirmatory factor analysis: Locating the invariant referent variables.
-\emph{Structural Equation Modeling}, 15(1), 96–113.
+\emph{Structural Equation Modeling, 15}(1), 96-113. \doi{10.1080/10705510701758349}
+
+Garnier-Villarreal, M., & Jorgensen, T. D. (2025). Evaluating Local Model Misspecification with Modification Indices in Bayesian Structural Equation Modeling.
+\emph{Structural Equation Modeling: A Multidisciplinary Journal, 32}(2), 304–318. \doi{10.1080/10705511.2024.2413128}
 
 Stark, S., Chernyshenko, O. S., & Drasgow, F. (2006). Detecting differential item functioning with confirmatory factor analysis and item response theory: Toward a unified strategy.
-\emph{Journal of Applied Psychology}, 91(6), 1292–1306.
+\emph{Journal of Applied Psychology, 91}(6), 1292-1306. \doi{10.1037/0021-9010.91.6.1292}
 
-Kolbe, L., & Jorgensen, T. D. (2018). Using product indicators in restricted factor analysis models to detect nonuniform measurement bias.
-In \emph{Quantitative Psychology} (pp. 235–245). Springer.
+Kolbe, L., & Jorgensen, T. D. (2018). Using product indicators in restricted factor analysis models to detect nonuniform measurement bias. In M. Wiberg, S. Culpepper, R. Janssen, J.,
+Gonzalez, & D. Molenaar (Eds.), \emph{Quantitative Psychology: The 82nd Annual Meeting of the Psychometric Society, Zurich, Switzerland, 2017} (pp. 235-245). (Springer Proceedings in
+Mathematics & Statistics; Vol. 233). Springer. \doi{10.1007/978-3-319-77249-3_20}
 
-Kolbe, L., & Jorgensen, T. D. (2019). Using restricted factor analysis to select anchor items and detect differential item functioning.
-\emph{Behavior Research Methods}, 51, 138–151.
+Kolbe, L., Jorgensen, T.D. (2019). Using restricted factor analysis to select anchor items and detect differential item functioning.
+\emph{Behavior Research Methods, 51}(1), 138-151. \doi{10.3758/s13428-018-1151-3}
 
-Kolbe, L., Jorgensen, T. D., & Molenaar, D. (2020). The Impact of Unmodeled Heteroskedasticity on Assessing Measurement Invariance in Single-group Models.
-\emph{Structural Equation Modeling}, 28(1), 82–98.
+Kolbe, L., Jorgensen, T. D., & Molenaar, D. (2021). The Impact of Unmodeled Heteroskedasticity on Assessing Measurement Invariance in Single-group Models.
+\emph{Structural Equation Modeling: A Multidisciplinary Journal, 28}(1), 82-98. \doi{10.1080/10705511.2020.1766357}
 
-Whittaker, T. A. (2012). Estimation of Standardized Expected Parameter Change for DIF Detection.
-\emph{Educational and Psychological Measurement}, 72(3), 342-357.
-
-Garnier-Villarreal, M., & Jorgensen, T. D. (2024). Evaluating Local Model Misspecification with Modification Indices in Bayesian Structural Equation Modeling.
-\emph{Structural Equation Modeling}, 1–15.
+Whittaker, T. A. (2012). Using the Modification Index and Standardized Expected Parameter Change for Model Modification.
+\emph{The Journal of Experimental Education, 80}(1), 26–44. \doi{10.1080/00220973.2010.531299}
 }

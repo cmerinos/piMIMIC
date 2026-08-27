@@ -51,47 +51,47 @@ A list with:
 \item{DIF.Global}{Data frame: Item, Chi2 (2 df), p.value, and crit.Oort if adjusted.}
 \item{DIF.Uniforme}{Data frame: Item, Chi2 (1 df), p.value, and crit.Oort if adjusted.}
 \item{DIF.NoUniforme}{Data frame: Item, Chi2 (1 df), p.value, and crit.Oort if adjusted.}
-\item{DeltaR2.Global}{Data frame: Item, DeltaR² (full vs no‑DIF model).}
-\item{DeltaR2.uDIF}{Data frame: Item, DeltaR² (full vs b=0 model).}
-\item{DeltaR2.nuDIF}{Data frame: Item, DeltaR² (full vs c=0 model).}
+\item{DeltaR2.Global}{Data frame: Item, DeltaR^2 (full vs no-DIF model).}
+\item{DeltaR2.uDIF}{Data frame: Item, DeltaR^2 (full vs b=0 model).}
+\item{DeltaR2.nuDIF}{Data frame: Item, DeltaR^2 (full vs c=0 model).}
 \item{fit}{The fitted unrestricted (full) lavaan object (only for fixed anchors).}
 \item{constrained_fits}{If \code{return_models=TRUE}, a nested list of fitted models (only for fixed anchors).}
 }
 \description{
 Implements the product indicator (PI) approach for MIMIC models to detect
-uniform and non‑uniform DIF. Uses LRT between unrestricted and restricted
-models and reports change in R² as effect size. Optionally applies Oort's
+uniform and non-uniform DIF. Uses LRT between unrestricted and restricted
+models and reports change in R^2 as effect size. Optionally applies Oort's
 critical value adjustment to control Type I error inflation.
 }
 \details{
-The procedure computes \strong{ΔR²} as a measure of effect size, representing the
+The procedure computes \strong{delta-R^2} as a measure of effect size, representing the
 change in the proportion of variance explained for that item between a
 constrained and an unconstrained model. Specifically:
 \itemize{
 \item \strong{Global DIF} (2 df): compares the full model (with both direct and
 interaction effects for the item) against a model with \strong{both} effects fixed
-to zero. ΔR² = R²(full) - R²(both fixed).
+to zero. delta-R^2 = R^2(full) - R^2(both fixed).
 \item \strong{Non‑uniform DIF} (1 df): compares the full model against a model where
 the \strong{interaction effect} is fixed to zero (while the direct effect remains
-free). ΔR² = R²(full) - R²(interaction fixed).
+free). delta-R^2 = R^2(full) - R^2(interaction fixed).
 \item \strong{Uniform DIF} (1 df): compares the full model against a model where the
 \strong{direct effect} of the covariate is fixed to zero (while the interaction
-remains free). ΔR² = R²(full) - R²(direct fixed).
+remains free). delta-R^2 = R^2(full) - R^2(direct fixed).
 }
 
-This sequential logic (global → non‑uniform → uniform) is consistent with
+This sequential logic (global to non-uniform to uniform) is consistent with
 common DIF detection strategies, such as those used in \strong{ordinal logistic
 regression} (e.g., Zumbo, 1999), where the interaction
 term is tested first, followed by the group effect.
 
-The R² values are extracted from \code{lavaan::lavInspect(fit, "rsquare")} for the
-specific item being tested. These ΔR² values complement the significance tests
+The R^2 values are extracted from \code{lavaan::lavInspect(fit, "rsquare")} for the
+specific item being tested. These delta-R^2 values complement the significance tests
 by quantifying the practical impact of DIF, with larger values indicating a
 stronger effect.
 
 The function allows flexible specification of anchor items (see argument
 \code{anchor}), including the \code{"rest"} option which iteratively tests each item
-against all others as anchors, following the "un‑contra‑todos" approach
+against all others as anchors, following the "one-against-all" approach
 (Oort, 1998). It also includes an optional Oort adjustment to control Type I
 error inflation in the LRT.
 
@@ -99,18 +99,25 @@ The \code{"rest"} approach (Oort, 1998) evaluates each item against all other it
 anchors. This is a robust alternative when no prior anchor set is available.
 
 The Oort adjustment modifies the critical chi-square value:
-\deqn{K^\prime = (χ²₀ / (K + df₀ - 1)) * K}
-where χ²₀ and df₀ are from the baseline (full invariance) model, and K is
+\deqn{K^\prime = (χ^2₀ / (K + df0 - 1)) * K}
+where χ^2₀ and df₀ are from the baseline (full invariance) model, and K is
 the original critical value. This adjustment is recommended when the baseline
-model shows evidence of misfit (χ²₀/df₀ > 1), as it helps control Type I error.
+model shows evidence of misfit (χ^2₀/df₀ > 1), as it helps control Type I error.
 }
 \references{
-Oort, F. J. (1998). Simulation study of item bias detection with restricted
-factor analysis. \emph{Structural Equation Modeling, 5}, 107–124.
+Oort F. J. (1992). Using restricted factor analysis to detect item bias. \emph{Methodika, 6}, 150-166.
 
-Kolbe, L., & Jorgensen, T. D. (2018). Using product indicators in restricted
-factor analysis models to detect nonuniform measurement bias.
-In \emph{Quantitative Psychology} (pp. 235–245). Springer.
+Oort, F. J. (1998). Simulation study of item bias detection with restricted factor analysis.
+\emph{Structural Equation Modeling, 5}, 107-124. \doi{10.1080/10705519809540095}
+
+Kolbe, L., & Jorgensen, T. D. (2018). Using product indicators in restricted factor analysis models to detect nonuniform measurement bias. In M. Wiberg, S. Culpepper, R. Janssen, J.,
+Gonzalez, & D. Molenaar (Eds.), \emph{Quantitative Psychology: The 82nd Annual Meeting of the Psychometric Society, Zurich, Switzerland, 2017} (pp. 235-245). (Springer Proceedings in
+Mathematics & Statistics; Vol. 233). Springer. \doi{10.1007/978-3-319-77249-3_20}
+Kolbe, L., Jorgensen, T.D. (2019). Using restricted factor analysis to select anchor items and detect differential item functioning.
+\emph{Behavior Research Methods, 51}(1), 138-151. \doi{10.3758/s13428-018-1151-3}
+
+Kolbe, L., Jorgensen, T. D., & Molenaar, D. (2021). The Impact of Unmodeled Heteroskedasticity on Assessing Measurement Invariance in Single-group Models.
+\emph{Structural Equation Modeling: A Multidisciplinary Journal, 28}(1), 82-98. \doi{10.1080/10705511.2020.1766357}
 
 Zumbo, B. D. (1999). A handbook on the theory and methods of differential item
 functioning (DIF): Logistic regression modeling as a unitary framework for binary

@@ -45,8 +45,9 @@ A list with components:
 }
 \description{
 Calculates the Mahalanobis distance for each item based on selected DIF metrics
-(e.g., SEPC, EPC, or delta R^2). Items with large distances are potential outliers
-and may indicate substantial DIF. A plot can be generated to visualize the distances.
+standardized expected parameter change (SEPC), expected parameter change (EPC) or delta R^2). Items with large
+distances are potential outliers and may indicate substantial DIF. A plot can be generated to visualize
+the distances.
 }
 \details{
 \strong{Mahalanobis distance}

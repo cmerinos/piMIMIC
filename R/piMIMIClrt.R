@@ -2,8 +2,8 @@
 #'
 #' @description
 #' Implements the product indicator (PI) approach for MIMIC models to detect
-#' uniform and non‑uniform DIF. Uses LRT between unrestricted and restricted
-#' models and reports change in R² as effect size. Optionally applies Oort's
+#' uniform and non-uniform DIF. Uses LRT between unrestricted and restricted
+#' models and reports change in R^2 as effect size. Optionally applies Oort's
 #' critical value adjustment to control Type I error inflation.
 #'
 #' @param data Data frame containing items and the covariate.
@@ -25,40 +25,40 @@
 #' \item{DIF.Global}{Data frame: Item, Chi2 (2 df), p.value, and crit.Oort if adjusted.}
 #' \item{DIF.Uniforme}{Data frame: Item, Chi2 (1 df), p.value, and crit.Oort if adjusted.}
 #' \item{DIF.NoUniforme}{Data frame: Item, Chi2 (1 df), p.value, and crit.Oort if adjusted.}
-#' \item{DeltaR2.Global}{Data frame: Item, DeltaR² (full vs no‑DIF model).}
-#' \item{DeltaR2.uDIF}{Data frame: Item, DeltaR² (full vs b=0 model).}
-#' \item{DeltaR2.nuDIF}{Data frame: Item, DeltaR² (full vs c=0 model).}
+#' \item{DeltaR2.Global}{Data frame: Item, DeltaR^2 (full vs no-DIF model).}
+#' \item{DeltaR2.uDIF}{Data frame: Item, DeltaR^2 (full vs b=0 model).}
+#' \item{DeltaR2.nuDIF}{Data frame: Item, DeltaR^2 (full vs c=0 model).}
 #' \item{fit}{The fitted unrestricted (full) lavaan object (only for fixed anchors).}
 #' \item{constrained_fits}{If `return_models=TRUE`, a nested list of fitted models (only for fixed anchors).}
 #'
 #' @details
-#' The procedure computes **ΔR²** as a measure of effect size, representing the
+#' The procedure computes **delta-R^2** as a measure of effect size, representing the
 #' change in the proportion of variance explained for that item between a
 #' constrained and an unconstrained model. Specifically:
 #'
 #' * **Global DIF** (2 df): compares the full model (with both direct and
 #'   interaction effects for the item) against a model with **both** effects fixed
-#'   to zero. ΔR² = R²(full) - R²(both fixed).
+#'   to zero. delta-R^2 = R^2(full) - R^2(both fixed).
 #' * **Non‑uniform DIF** (1 df): compares the full model against a model where
 #'   the **interaction effect** is fixed to zero (while the direct effect remains
-#'   free). ΔR² = R²(full) - R²(interaction fixed).
+#'   free). delta-R^2 = R^2(full) - R^2(interaction fixed).
 #' * **Uniform DIF** (1 df): compares the full model against a model where the
 #'   **direct effect** of the covariate is fixed to zero (while the interaction
-#'   remains free). ΔR² = R²(full) - R²(direct fixed).
+#'   remains free). delta-R^2 = R^2(full) - R^2(direct fixed).
 #'
-#' This sequential logic (global → non‑uniform → uniform) is consistent with
+#' This sequential logic (global to non-uniform to uniform) is consistent with
 #' common DIF detection strategies, such as those used in **ordinal logistic
 #' regression** (e.g., Zumbo, 1999), where the interaction
 #' term is tested first, followed by the group effect.
 #'
-#' The R² values are extracted from `lavaan::lavInspect(fit, "rsquare")` for the
-#' specific item being tested. These ΔR² values complement the significance tests
+#' The R^2 values are extracted from `lavaan::lavInspect(fit, "rsquare")` for the
+#' specific item being tested. These delta-R^2 values complement the significance tests
 #' by quantifying the practical impact of DIF, with larger values indicating a
 #' stronger effect.
 #'
 #' The function allows flexible specification of anchor items (see argument
 #' `anchor`), including the `"rest"` option which iteratively tests each item
-#' against all others as anchors, following the "un‑contra‑todos" approach
+#' against all others as anchors, following the "one-against-all" approach
 #' (Oort, 1998). It also includes an optional Oort adjustment to control Type I
 #' error inflation in the LRT.
 #'
@@ -66,18 +66,25 @@
 #' anchors. This is a robust alternative when no prior anchor set is available.
 #'
 #' The Oort adjustment modifies the critical chi-square value:
-#' \deqn{K^\prime = (χ²₀ / (K + df₀ - 1)) * K}
-#' where χ²₀ and df₀ are from the baseline (full invariance) model, and K is
+#' \deqn{K^\prime = (χ^2₀ / (K + df0 - 1)) * K}
+#' where χ^2₀ and df₀ are from the baseline (full invariance) model, and K is
 #' the original critical value. This adjustment is recommended when the baseline
-#' model shows evidence of misfit (χ²₀/df₀ > 1), as it helps control Type I error.
+#' model shows evidence of misfit (χ^2₀/df₀ > 1), as it helps control Type I error.
 #'
 #' @references
-#' Oort, F. J. (1998). Simulation study of item bias detection with restricted
-#' factor analysis. *Structural Equation Modeling, 5*, 107–124.
+#' Oort F. J. (1992). Using restricted factor analysis to detect item bias. \emph{Methodika, 6}, 150-166.
 #'
-#' Kolbe, L., & Jorgensen, T. D. (2018). Using product indicators in restricted
-#' factor analysis models to detect nonuniform measurement bias.
-#' In *Quantitative Psychology* (pp. 235–245). Springer.
+#' Oort, F. J. (1998). Simulation study of item bias detection with restricted factor analysis.
+#' \emph{Structural Equation Modeling, 5}, 107-124. \doi{10.1080/10705519809540095}
+#'
+#' Kolbe, L., & Jorgensen, T. D. (2018). Using product indicators in restricted factor analysis models to detect nonuniform measurement bias. In M. Wiberg, S. Culpepper, R. Janssen, J.,
+#' Gonzalez, & D. Molenaar (Eds.), \emph{Quantitative Psychology: The 82nd Annual Meeting of the Psychometric Society, Zurich, Switzerland, 2017} (pp. 235-245). (Springer Proceedings in
+#' Mathematics & Statistics; Vol. 233). Springer. \doi{10.1007/978-3-319-77249-3_20}
+#' Kolbe, L., Jorgensen, T.D. (2019). Using restricted factor analysis to select anchor items and detect differential item functioning.
+#' \emph{Behavior Research Methods, 51}(1), 138-151. \doi{10.3758/s13428-018-1151-3}
+#'
+#' Kolbe, L., Jorgensen, T. D., & Molenaar, D. (2021). The Impact of Unmodeled Heteroskedasticity on Assessing Measurement Invariance in Single-group Models.
+#' \emph{Structural Equation Modeling: A Multidisciplinary Journal, 28}(1), 82-98. \doi{10.1080/10705511.2020.1766357}
 #'
 #' Zumbo, B. D. (1999). A handbook on the theory and methods of differential item
 #' functioning (DIF): Logistic regression modeling as a unitary framework for binary
@@ -92,7 +99,7 @@ piMIMIClrt <- function(data, items, cov, lvname = "LatFact", est = "MLM",
                        anchor, Oort.adj = FALSE, p.crit = 0.05,
                        return_models = FALSE, adjust = "none", ...) {
 
-  # ---- Validación de 'anchor' ----
+  # ---- Validation of 'anchor' ----
   if (missing(anchor)) {
     stop("'anchor' must be specified. Use 'rest' for iterative testing, or a character vector of at least two item names.")
   }
@@ -108,7 +115,7 @@ piMIMIClrt <- function(data, items, cov, lvname = "LatFact", est = "MLM",
     stop("'anchor' must be either 'rest' or a character vector of at least two item names.")
   }
 
-  # ---- Si anchor == "rest", ejecutar el bucle iterativo ----
+  # ---- If anchor == "rest", execute the loop ----
   if (length(anchor) == 1 && anchor == "rest") {
     n_items <- length(items)
     res_global <- data.frame(Item = items, Chi2 = NA, df = 2, p.value = NA)
@@ -173,12 +180,12 @@ piMIMIClrt <- function(data, items, cov, lvname = "LatFact", est = "MLM",
     return(out)
   }
 
-  # ---- Si es un vector de anclas (>= 2), ejecutar el código estándar ----
+  # ---- If it is an vector of anchors (>= 2), execute the standard code ----
   anchor_items <- anchor
   tested_items <- setdiff(items, anchor_items)
   if (length(tested_items) == 0) stop("No items left to test after removing anchors.")
 
-  # ---- Preparar covariate centrada ----
+  # ---- Prepare a centered covariate ----
   cov_orig <- data[[cov]]
   if (is.factor(cov_orig)) {
     cov_num <- as.numeric(cov_orig) - 1
@@ -188,7 +195,7 @@ piMIMIClrt <- function(data, items, cov, lvname = "LatFact", est = "MLM",
   cov_centered <- cov_num - mean(cov_num, na.rm = TRUE)
   data[[paste0(cov, "_cent")]] <- cov_centered
 
-  # ---- Crear productos indicadores ----
+  # ---- Create indicator products ----
   prod_data <- semTools::indProd(
     data = data,
     var1 = items,
@@ -201,7 +208,7 @@ piMIMIClrt <- function(data, items, cov, lvname = "LatFact", est = "MLM",
     stop("Product indicator columns were not created correctly.")
   }
 
-  # ---- Construir modelo completo ----
+  # ---- Build a complete model ----
   cov_fac <- paste0(cov, "_fac")
   int_fac <- paste0(lvname, "_x_", cov)
 
@@ -211,7 +218,7 @@ piMIMIClrt <- function(data, items, cov, lvname = "LatFact", est = "MLM",
   syntax_int <- paste0(int_fac, " =~ ", paste(prod_names, collapse = " + "))
   residual_cov <- paste(paste0(items, " ~~ ", items, ".", cov, "_cent"), collapse = "\n")
 
-  # Regresiones solo para los ítems no ancla
+  # Regressions only for non-anchor items
   reg_lines <- character(length(tested_items))
   for (i in seq_along(tested_items)) {
     item <- tested_items[i]
@@ -228,7 +235,7 @@ piMIMIClrt <- function(data, items, cov, lvname = "LatFact", est = "MLM",
   model_full <- paste(syntax_lv, syntax_cov, syntax_int,
                       reg_part, residual_cov, covariances, sep = "\n")
 
-  # ---- Ajustar modelo completo ----
+  # ---- Fit the entire model ----
   fit_full <- lavaan::cfa(model = model_full,
                           data = prod_data,
                           estimator = est,
@@ -240,7 +247,7 @@ piMIMIClrt <- function(data, items, cov, lvname = "LatFact", est = "MLM",
   rsq_full <- lavaan::lavInspect(fit_full, "rsquare")
   rsq_full_tested <- rsq_full[tested_items]
 
-  # ---- Modelo base para ajuste Oort ----
+  # ---- Base model for the Oort fit ----
   if (Oort.adj) {
     base_model <- model_full
     for (i in seq_along(tested_items)) {
@@ -258,7 +265,7 @@ piMIMIClrt <- function(data, items, cov, lvname = "LatFact", est = "MLM",
     crit.uniform <- (chi0 / (K_uniform + df0 - 1)) * K_uniform
   }
 
-  # ---- Preparar contenedores ----
+  # ---- Prepare containers ----
   n_items <- length(tested_items)
   results <- list(
     DIF.Global = data.frame(Item = tested_items, Chi2 = NA, df = 2, p.value = NA),
@@ -278,7 +285,7 @@ piMIMIClrt <- function(data, items, cov, lvname = "LatFact", est = "MLM",
     names(constrained_fits) <- tested_items
   }
 
-  # ---- Bucle sobre cada ítem no ancla ----
+  # ---- Loop over each non-anchor item ----
   for (i in seq_along(tested_items)) {
     item <- tested_items[i]
     b_label <- paste0("b", i)
@@ -289,15 +296,15 @@ piMIMIClrt <- function(data, items, cov, lvname = "LatFact", est = "MLM",
     syntax_m0 <- gsub(paste0(c_label, "\\*", int_fac), paste0("0*", int_fac), syntax_m0)
     fit_m0 <- lavaan::cfa(model = syntax_m0, data = prod_data, estimator = est, ...)
 
-    # Mb: b=0, c libre
+    # Mb: b=0, c free
     syntax_mb <- gsub(paste0(b_label, "\\*", cov_fac), paste0("0*", cov_fac), model_full)
     fit_mb <- lavaan::cfa(model = syntax_mb, data = prod_data, estimator = est, ...)
 
-    # Mc: c=0, b libre
+    # Mc: c=0, b free
     syntax_mc <- gsub(paste0(c_label, "\\*", int_fac), paste0("0*", int_fac), model_full)
     fit_mc <- lavaan::cfa(model = syntax_mc, data = prod_data, estimator = est, ...)
 
-    # R² de cada modelo
+    # R^2 for each model
     rsq_m0 <- lavaan::lavInspect(fit_m0, "rsquare")[item]
     rsq_mb <- lavaan::lavInspect(fit_mb, "rsquare")[item]
     rsq_mc <- lavaan::lavInspect(fit_mc, "rsquare")[item]
@@ -310,17 +317,17 @@ piMIMIClrt <- function(data, items, cov, lvname = "LatFact", est = "MLM",
     chisq_global <- if (nrow(lrt_global) == 2) lrt_global[2, "Chisq diff"] else lrt_global[2, "Chisq"]
     p_global <- if (nrow(lrt_global) == 2) lrt_global[2, "Pr(>Chisq)"] else lrt_global[2, "P"]
 
-    # Uniforme
+    # Uniform
     lrt_ub <- lavaan::lavTestLRT(fit_mb, fit_full, method = lrt_method)
     chisq_ub <- if (nrow(lrt_ub) == 2) lrt_ub[2, "Chisq diff"] else lrt_ub[2, "Chisq"]
     p_ub <- if (nrow(lrt_ub) == 2) lrt_ub[2, "Pr(>Chisq)"] else lrt_ub[2, "P"]
 
-    # No uniforme
+    # Non uniform
     lrt_nu <- lavaan::lavTestLRT(fit_mc, fit_full, method = lrt_method)
     chisq_nu <- if (nrow(lrt_nu) == 2) lrt_nu[2, "Chisq diff"] else lrt_nu[2, "Chisq"]
     p_nu <- if (nrow(lrt_nu) == 2) lrt_nu[2, "Pr(>Chisq)"] else lrt_nu[2, "P"]
 
-    # Guardar
+    # Saving
     results$DIF.Global[i, c("Chi2", "p.value")] <- c(chisq_global, p_global)
     results$DIF.Uniforme[i, c("Chi2", "p.value")] <- c(chisq_ub, p_ub)
     results$DIF.NoUniforme[i, c("Chi2", "p.value")] <- c(chisq_nu, p_nu)
@@ -340,14 +347,14 @@ piMIMIClrt <- function(data, items, cov, lvname = "LatFact", est = "MLM",
     }
   }
 
-  # ---- Ajuste de p-valores ----
+  # ---- Adjustment of p-values ----
   if (adjust != "none") {
     results$DIF.Global$p.value <- stats::p.adjust(results$DIF.Global$p.value, method = adjust)
     results$DIF.Uniforme$p.value <- stats::p.adjust(results$DIF.Uniforme$p.value, method = adjust)
     results$DIF.NoUniforme$p.value <- stats::p.adjust(results$DIF.NoUniforme$p.value, method = adjust)
   }
 
-  # ---- Salida ----
+  # ---- Output ----
   out <- list(
     DIF.Global = results$DIF.Global,
     DIF.Uniforme = results$DIF.Uniforme,
