@@ -50,7 +50,7 @@ piMIMIC.plot(results, cov = "group")
 
 ## References
 
-Kolbe, L., & Jorgensen, T. D. (2018). Using product indicators in restricted factor analysis models to detect nonuniform measurement bias. In M. Wiberg, S. A. Culpepper, R. Janssen, \#' J. González, & D. Molenaar (Eds.), Quantitative psychology: The 82nd Annual Meeting of the Psychometric Society, Zurich, Switzerland, 2017 (pp. 235–245). New York, NY: Springer. [https://doi.org/10.1007/978-3-319-77249-3_20](doi:https://doi.org/10.1007/978-3-319-77249-3_20){.uri}
+Kolbe, L., & Jorgensen, T. D. (2018). Using product indicators in restricted factor analysis models to detect nonuniform measurement bias. In M. Wiberg, S. A. Culpepper, R. Janssen, J. González, & D. Molenaar (Eds.), Quantitative psychology: The 82nd Annual Meeting of the Psychometric Society, Zurich, Switzerland, 2017 (pp. 235–245). New York, NY: Springer. <https://doi.org/10.1007/978-3-319-77249-3_20>
 
 Kolbe, L., & Jorgensen, T. D. (2019). Using restricted factor analysis to select anchor items and detect differential item functioning. Behavior Research Methods, 51, 138–151. <https://doi.org/10.3758/s13428-018-1151-3>
 
