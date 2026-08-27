@@ -1,0 +1,10 @@
+citEntry(
+  entry = "Manual",
+  title = "piMIMIC: R package for DIF detection using Product of Indicators (PI) for MIMIC Models",
+  author = person("Cesar", "Merino-Soto", email = "sikayax@yahoo.com.ar",
+                  comment = c(ORCID = "0000-0002-1407-8306")),
+  year = 2026,
+  url = "https://github.com/cmerinos/piMIMIC",
+  version = "0.4.0",
+  textVersion = paste("Merino-Soto, C. (2026). piMIMIC: R package for DIF detection using Product of Indicators (PI) for MIMIC Models (Version 0.4.0). https://github.com/cmerinos/piMIMIC")
+)
