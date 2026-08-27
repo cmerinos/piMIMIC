@@ -52,8 +52,7 @@ and may indicate substantial DIF. A plot can be generated to visualize the dista
 \strong{Mahalanobis distance}
 It measures how far each item is from the center of the distribution of all items,
 taking into account the correlations between the DIF metrics. A large distance
-indicates that the item behaves unusually compared to the others, which may
-suggest it is the source of DIF.
+indicates that comparatively the item behaves unusually show strong DIF.
 
 \strong{When you have only one metric} (e.g., \code{target = "udif"}), the Mahalanobis
 distance reduces to the squared z-score: \code{(x - mean)^2 / var}. This follows a
@@ -63,7 +62,7 @@ chi-square distribution with 1 degree of freedom, so the cutoff is
 \strong{Two dimensions (\code{target = "global"}):}
 The distance is calculated in a bivariate space. The covariance matrix is estimated
 from the data. For the distance to be reliable, you need at least 3 items
-(preferably more). With fewer than 5 items, the covariance matrix may be unstable,
+(preferably more). Still with fewer than 5 items, the covariance matrix may be unstable,
 and the distances should be interpreted with caution.
 
 \strong{Choosing the cutoff:}
@@ -74,8 +73,23 @@ are flagged as potential outliers. You can also supply a custom value via
 }
 \examples{
 \dontrun{
+### Loading database ####
+library(psych)
+#Loading data
+data("bfi")
+
+# Choosing variables
+data.bfi <- bfi[, c("N1", "N2", "N3", "N4", "N5", "gender", "age")]
+
+# Clean for missing values
+data.bfi <- data.bfi[complete.cases(data.bfi), ]
+
+data.bfi$gender <- as.factor(data.bfi$gender)
+
+neuro.items <- c("N1", "N2", "N3", "N4", "N5")
+
 # Using piMIMIC output (score test)
-result <- piMIMIC(data = bfi, items = neuro.items, cov = "gender")
+result <- piMIMIC(data = data.bfi, items = neuro.items, cov = "gender")
 
 # Mahalanobis distance based on both uniform and non-uniform SEPC
 dist_global <- distancepiMIMIC(output = result, method = "score",

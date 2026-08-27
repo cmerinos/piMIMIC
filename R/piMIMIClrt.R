@@ -82,7 +82,7 @@
 #' Zumbo, B. D. (1999). A handbook on the theory and methods of differential item
 #' functioning (DIF): Logistic regression modeling as a unitary framework for binary
 #' and Likert-type (ordinal) item scores. Directorate of Human Resources Research
-#' and Evaluation, Department of National Defence.
+#' and Evaluation, Department of National Defense.
 #'
 #' @importFrom lavaan cfa lavTestLRT lavInspect
 #' @importFrom semTools indProd
