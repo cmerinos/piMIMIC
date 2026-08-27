@@ -35,23 +35,32 @@ A ggplot bar plot, or \code{NULL} if insufficient data.
 }
 \description{
 Generates bar plots of unstandardized (EPC) or standardized (SEPC.ALL)
-expected parameter change for uniform and non‑uniform DIF, facilitating
+expected parameter change for uniform and non-uniform DIF, facilitating
 the interpretation of DIF effects from \code{\link{piMIMIC}} output.
 }
 \details{
 \code{plotpiMIMIC} requires as input the output list from \code{piMIMIC}, specifically
 the \verb{$SEPC.uDIF} and \verb{$SEPC.nuDIF} components. It combines them and plots
 either the unstandardized (EPC) or standardized (SEPC.ALL) expected parameter
-change for each item, with separate bars for uniform and non‑uniform DIF.
+change for each item, with separate bars for uniform and non-uniform DIF.
 
 The function uses \code{ggplot2}. If the data are missing, it returns \code{NULL} with
 a warning.
 }
 \examples{
 \dontrun{
-res <- piMIMIC(data = bfi, items = neuro.items, cov = "gender")
-plotpiMIMIC(res, cov = "gender")
-plotpiMIMIC(res, cov = "gender", metric = "EPC", cutoff.line = c(-0.10, 0.10))
+### Example 1: simulated data -------------
+set.seed(123)
+Exmp1.data <- data.frame(
+  grp = sample(0:1, 100, replace = TRUE),  # Group variable
+  item1 = sample(1:5, 100, replace = TRUE),
+  item2 = sample(1:5, 100, replace = TRUE),
+  item3 = sample(1:5, 100, replace = TRUE),
+  item4 = sample(1:5, 100, replace = TRUE))
+
+res <- piMIMIC(data = Exmp1.data , items = c("item1","item2","item3"), cov = "grp")
+plotpiMIMIC(res, cov = "grp")
+plotpiMIMIC(res, cov = "grp", metric = "EPC", cutoff.line = c(-0.10, 0.10))
 }
 
 }
