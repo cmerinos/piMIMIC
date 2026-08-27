@@ -104,6 +104,42 @@ where \eqn{\chi^2_0} and \eqn{\df_0} are from the baseline (full invariance) mod
 the original critical value. This adjustment is recommended when the baseline
 model shows evidence of misfit (\eqn{\chi^2_0}/\eqn{\df_0} > 1), as it helps control Type I error.
 }
+\examples{
+### piMIMIC with LRT ####
+\donttest{
+# Loading database
+library(psych)
+data("bfi")
+
+# Choosing variables
+data.bfi <- bfi[, c("N1", "N2", "N3", "N4", "N5", "gender", "age")]
+
+# Clean for missing values
+data.bfi <- data.bfi[complete.cases(data.bfi), ]
+
+data.bfi$gender <- as.factor(data.bfi$gender)
+
+neuro.items <- c("N1", "N2", "N3", "N4", "N5")
+
+# Running analysis: est = "mlr"
+piMIMIClrt(data = data.bfi,
+          anchor = "rest",
+         items = neuro.items,
+         cov = "gender",
+         lvname = "Neuroticismo",
+         est = "mlr", Oort.adj = F)
+
+# Running analysis: est = "ulsmv", with Oort adjustment
+piMIMIClrt(data = data.bfi,
+anchor = c("N1", "N2"),
+items = neuro.items,
+cov = "gender",
+lvname = "Neuroticismo",
+est = "ulsmv",
+Oort.adj = T)
+}
+
+}
 \references{
 Oort F. J. (1992). Using restricted factor analysis to detect item bias. \emph{Methodika, 6}, 150-166.
 
