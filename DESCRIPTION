@@ -1,20 +1,22 @@
 Package: piMIMIC
 Type: Package
-Title: Product of Indicators (PI) for MIMIC Models in DIF Detection, using SEM
+Title: Differential Item Functioning Detection Using MIMIC Models With Product Indicators
 Version: 0.4.0
 Authors@R: c(
     person("Cesar", "Merino-Soto", email = "sikayax@yahoo.com.ar", role = c("aut", "cre")))
-Description: Provides functions to analyze differential item functioning (DIF) using
-    the Multiple Indicators Multiple Causes (MIMIC) framework with product of indicators (PI). 
-    The piMIMIC function includes likelihood ratio and Score tests for global, uniform, and 
-    non-uniform DIF detection,  as well effect sizes estimation through a fixed-to-zero 
-    parameter release strategy, and squared-R differences. The implementation follows the 
-    conceptual work of Kolbe and Jorgensen, and utilizes functions from the 'lavaan' and 
-    'semTools' packages, among others.
+Description: Provides functions to analyze differential item functioning (DIF)
+    using the Multiple Indicators Multiple Causes (MIMIC) framework with
+    product indicators (PI). The package implements likelihood ratio and
+    score tests for global, uniform, and non-uniform DIF detection,
+    together with effect size estimation through a fixed-to-zero parameter
+    release strategy and R-squared differences. The implementation follows
+    the methodology proposed by Kolbe and Jorgensen (see the References
+    sections of the documented functions) and utilizes functions from the
+    'lavaan' and 'semTools' packages, among others.
 License: GPL-3 + file LICENSE
 Encoding: UTF-8
 LazyData: true
-Depends: R (>= 4.0.0)
+Depends: R (>= 3.6.0)
 Imports:
     lavaan,
     ggplot2,
@@ -22,11 +24,11 @@ Imports:
     stats,
     rlang
 Suggests:
-    devtools,
     testthat,
     knitr,
     rmarkdown,
     psych
 Roxygen: list(markdown = TRUE)
-Date/Publication: 2026-08-20
+URL: https://github.com/cmerinos/piMIMIC
+BugReports: https://github.com/cmerinos/piMIMIC/issues
 Config/roxygen2/version: 8.1.0

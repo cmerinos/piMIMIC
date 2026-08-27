@@ -71,7 +71,7 @@ constrained and an unconstrained model. Specifically:
 \item \strong{Global DIF} (2 df): compares the full model (with both direct and
 interaction effects for the item) against a model with \strong{both} effects fixed
 to zero. delta-R^2 = R^2(full) - R^2(both fixed).
-\item \strong{Non‑uniform DIF} (1 df): compares the full model against a model where
+\item \strong{Non-uniform DIF} (1 df): compares the full model against a model where
 the \strong{interaction effect} is fixed to zero (while the direct effect remains
 free). delta-R^2 = R^2(full) - R^2(interaction fixed).
 \item \strong{Uniform DIF} (1 df): compares the full model against a model where the
@@ -99,10 +99,10 @@ The \code{"rest"} approach (Oort, 1998) evaluates each item against all other it
 anchors. This is a robust alternative when no prior anchor set is available.
 
 The Oort adjustment modifies the critical chi-square value:
-\deqn{K^\prime = (χ^2₀ / (K + df0 - 1)) * K}
-where χ^2₀ and df₀ are from the baseline (full invariance) model, and K is
+\deqn{K^\prime = (\chi^2_0 / (K + \df_0 - 1)) * K}
+where \eqn{\chi^2_0} and \eqn{\df_0} are from the baseline (full invariance) model, and K is
 the original critical value. This adjustment is recommended when the baseline
-model shows evidence of misfit (χ^2₀/df₀ > 1), as it helps control Type I error.
+model shows evidence of misfit (\eqn{\chi^2_0}/\eqn{\df_0} > 1), as it helps control Type I error.
 }
 \references{
 Oort F. J. (1992). Using restricted factor analysis to detect item bias. \emph{Methodika, 6}, 150-166.

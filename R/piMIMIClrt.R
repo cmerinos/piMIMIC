@@ -39,7 +39,7 @@
 #' * **Global DIF** (2 df): compares the full model (with both direct and
 #'   interaction effects for the item) against a model with **both** effects fixed
 #'   to zero. delta-R^2 = R^2(full) - R^2(both fixed).
-#' * **Non‑uniform DIF** (1 df): compares the full model against a model where
+#' * **Non-uniform DIF** (1 df): compares the full model against a model where
 #'   the **interaction effect** is fixed to zero (while the direct effect remains
 #'   free). delta-R^2 = R^2(full) - R^2(interaction fixed).
 #' * **Uniform DIF** (1 df): compares the full model against a model where the
@@ -66,10 +66,10 @@
 #' anchors. This is a robust alternative when no prior anchor set is available.
 #'
 #' The Oort adjustment modifies the critical chi-square value:
-#' \deqn{K^\prime = (χ^2₀ / (K + df0 - 1)) * K}
-#' where χ^2₀ and df₀ are from the baseline (full invariance) model, and K is
+#' \deqn{K^\prime = (\chi^2_0 / (K + \df_0 - 1)) * K}
+#' where \eqn{\chi^2_0} and \eqn{\df_0} are from the baseline (full invariance) model, and K is
 #' the original critical value. This adjustment is recommended when the baseline
-#' model shows evidence of misfit (χ^2₀/df₀ > 1), as it helps control Type I error.
+#' model shows evidence of misfit (\eqn{\chi^2_0}/\eqn{\df_0} > 1), as it helps control Type I error.
 #'
 #' @references
 #' Oort F. J. (1992). Using restricted factor analysis to detect item bias. \emph{Methodika, 6}, 150-166.
@@ -90,6 +90,41 @@
 #' functioning (DIF): Logistic regression modeling as a unitary framework for binary
 #' and Likert-type (ordinal) item scores. Directorate of Human Resources Research
 #' and Evaluation, Department of National Defense.
+#'
+#' @examples
+#' ### piMIMIC with LRT ####
+#' \donttest{
+#' # Loading database
+#' library(psych)
+#' data("bfi")
+#'
+#' # Choosing variables
+#' data.bfi <- bfi[, c("N1", "N2", "N3", "N4", "N5", "gender", "age")]
+#'
+#' # Clean for missing values
+#' data.bfi <- data.bfi[complete.cases(data.bfi), ]
+#'
+#' data.bfi$gender <- as.factor(data.bfi$gender)
+#'
+#' neuro.items <- c("N1", "N2", "N3", "N4", "N5")
+#'
+#' # Running analysis: est = "mlr"
+#' piMIMIClrt(data = data.bfi,
+#'           anchor = "rest",
+#'          items = neuro.items,
+#'          cov = "gender",
+#'          lvname = "Neuroticismo",
+#'          est = "mlr", Oort.adj = F)
+#'
+#' # Running analysis: est = "ulsmv", with Oort adjustment
+#' piMIMIClrt(data = data.bfi,
+#' anchor = c("N1", "N2"),
+#' items = neuro.items,
+#' cov = "gender",
+#' lvname = "Neuroticismo",
+#' est = "ulsmv",
+#' Oort.adj = T)
+#' }
 #'
 #' @importFrom lavaan cfa lavTestLRT lavInspect
 #' @importFrom semTools indProd

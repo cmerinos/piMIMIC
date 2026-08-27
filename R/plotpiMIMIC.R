@@ -29,7 +29,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' ### Example 1: simulated data -------------
+#' ### Example : simulated data -------------
 #' set.seed(123)
 #' Exmp1.data <- data.frame(
 #'   grp = sample(0:1, 100, replace = TRUE),  # Group variable

@@ -1,4 +1,4 @@
-#' @title DIF analysis using PI-MIMIC with Score Test (Oort adjustment optional)
+#' @title DIF analysis using Product Indicators -MIMIC with Score Test (Oort adjustment optional)
 #'
 #' @description
 #' Implements the product indicator (PI) approach for MIMIC models to detect
@@ -16,17 +16,17 @@
 #' @return A list with:
 #' \item{DIF.Global}{Data frame with global DIF test (2 df): Chi^2, df, p-value, and Oort critical value if requested.}
 #' \item{DIF.Uniforme}{Data frame with uniform DIF test (1 df).}
-#' \item{DIF.NoUniforme}{Data frame with non‑uniform DIF test (1 df).}
+#' \item{DIF.NoUniforme}{Data frame with non-uniform DIF test (1 df).}
 #' \item{SEPC.uDIF}{Standardized expected parameter change for uniform DIF.}
 #' \item{SEPC.nuDIF}{Standardized expected parameter change for non-uniform DIF.}
 #' \item{fit}{The fitted lavaan object.}
 #'
 #' @details
-#' This function implements Differential Item Functioning (DIF) analysis using the Product of Indicators approach
+#' This function implements Differential Item Functioning (DIF) analysis using the Product  Indicators approach
 #' (PI; Kolbe & Jorgensen, 2018) within the Restricted Factor Analysis (RFA; Oort, 1998) framework. This method operates
 #' under a MIMIC scheme (Finch, 2005), incorporating latent variable interactions using PI; see Kolbe et al. (2018, 2019),
 #' Kolbe, Jorgensen, & Molenaar (2020). It allows for the evaluation of uniform (uDIF) and non-uniform DIF (nuDIF)
-#' with covariates that can be categorical (e.g., sex) or continuous (e.g., self-esteem, conscientiousness).
+#' with covariates that can be categorical (e.g., sex) or continuous (e.g., self-esteem score, conscientiousness score).
 #'
 #' Estimation is performed via lavaan::cfa, and DIF statistical tests are based on the Score test (Lagrange Multiplier
 #' test used to evaluate fixed or constrained parameters). By default, chi-square tests compare an unrestricted model
@@ -101,13 +101,13 @@
 #' Oort F. J. (1992). Using restricted factor analysis to detect item bias. \emph{Methodika, 6}, 150-166.
 #'
 #' Oort, F. J. (1998). Simulation study of item bias detection with restricted factor analysis.
-#' \emph{Structural Equation Modeling, 5}, 107–124. \doi{10.1080/10705519809540095}
+#' \emph{Structural Equation Modeling, 5}, 107-124. \doi{10.1080/10705519809540095}
 #'
 #' French, B. F., & Finch, W. H. (2008). Multigroup confirmatory factor analysis: Locating the invariant referent variables.
 #' \emph{Structural Equation Modeling, 15}(1), 96-113. \doi{10.1080/10705510701758349}
 #'
 #' Garnier-Villarreal, M., & Jorgensen, T. D. (2025). Evaluating Local Model Misspecification with Modification Indices in Bayesian Structural Equation Modeling.
-#' \emph{Structural Equation Modeling: A Multidisciplinary Journal, 32}(2), 304–318. \doi{10.1080/10705511.2024.2413128}
+#' \emph{Structural Equation Modeling: A Multidisciplinary Journal, 32}(2), 304-318. \doi{10.1080/10705511.2024.2413128}
 #'
 #' Stark, S., Chernyshenko, O. S., & Drasgow, F. (2006). Detecting differential item functioning with confirmatory factor analysis and item response theory: Toward a unified strategy.
 #' \emph{Journal of Applied Psychology, 91}(6), 1292-1306. \doi{10.1037/0021-9010.91.6.1292}
@@ -123,7 +123,7 @@
 #' \emph{Structural Equation Modeling: A Multidisciplinary Journal, 28}(1), 82-98. \doi{10.1080/10705511.2020.1766357}
 #'
 #' Whittaker, T. A. (2012). Using the Modification Index and Standardized Expected Parameter Change for Model Modification.
-#' \emph{The Journal of Experimental Education, 80}(1), 26–44. \doi{10.1080/00220973.2010.531299}
+#' \emph{The Journal of Experimental Education, 80}(1), 26-44. \doi{10.1080/00220973.2010.531299}
 #'
 #' @importFrom lavaan cfa lavTestScore parameterestimates
 #' @importFrom semTools indProd
