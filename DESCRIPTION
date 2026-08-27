@@ -24,7 +24,7 @@ Imports:
     stats,
     rlang
 Suggests:
-    testthat,
+    testthat (>= 3.0.0),
     knitr,
     rmarkdown,
     psych
@@ -32,3 +32,4 @@ Roxygen: list(markdown = TRUE)
 URL: https://github.com/cmerinos/piMIMIC
 BugReports: https://github.com/cmerinos/piMIMIC/issues
 Config/roxygen2/version: 8.1.0
+Config/testthat/edition: 3

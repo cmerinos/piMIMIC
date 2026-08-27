@@ -1,4 +1,4 @@
-# piMIMIC 0.4.0 (2026-08-20)
+# piMIMIC 0.4.0 (2026-08-27)
 
 ## New features
 - Added `distancepiMIMIC()`: calculates Mahalanobis distance for each item based on DIF metrics (SEPC, EPC, or ΔR²). This helps identify items with unusual DIF patterns, complementing significance tests. Includes optional plotting with cutoff lines.
@@ -31,7 +31,7 @@
 
 - Renamed from piRFA to piMIMIC.
 - Implements the `piMIMIClrt()` function for piMIMIC DIF analysis using likelihood ratio tests.
-- Presentation improvements.
+- Presentation improvements in documentation.
 
 # piMIMIC 0.1.0 (2024-05-10)
 
