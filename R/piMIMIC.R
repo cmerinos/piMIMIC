@@ -1,9 +1,11 @@
 #' @title DIF analysis using Product Indicators -MIMIC with Score Test (Oort adjustment optional)
 #'
 #' @description
-#' Implements the product indicator (PI) approach for MIMIC models to detect
-#' uniform and non-uniform DIF using the score test (modification indices).
-#' Optionally applies Oort's critical value adjustment to control Type I error.
+#' This function implements the score test (Lagrange Multiplier) version of
+#' PI-MIMIC. It evaluates uniform and non‑uniform DIF simultaneously. The
+#' Oort adjustment (optional) modifies the chi‑square critical value to control
+#' Type I error inflation, as described in Oort (1998). For technical details,
+#' see Kolbe & Jorgensen (2018).
 #'
 #' @param data Data frame containing items and the covariate.
 #' @param items Character vector of item names.
